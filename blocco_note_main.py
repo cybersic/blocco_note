@@ -21,7 +21,7 @@ class Main:
             [sg.FolderBrowse(key="-INPUT-"), sg.Button('Ok')]
         ]
 
-        path_window = sg.Window('Path', layout, size=(230, 100))
+        path_window = sg.Window('Path', layout, size=(230, 100), no_titlebar=True)
 
         while True:
             event, path = path_window.read()
@@ -34,8 +34,6 @@ class Main:
 
         path_window.close()
 
-        sg.WINDOW_CLOSED = False
-
         return Main.path
 
     def namefile_func(namefile):
@@ -45,26 +43,27 @@ class Main:
 
         layout = [
             [sg.Text("Write here the name of the file")],
-            [sg.Input(size=(50,20), key='-INPUT-'), sg.Button('Submit')]
+            [sg.Input(size=(50,20), key='-INPUT-'), sg.Button('Submit')],
+            [sg.Output(size=(60,1), key='-OUTP-')]
         ]
 
-        namefile_window = sg.Window('Name of the file', layout)
+        namefile_window = sg.Window('Name of the file', layout, no_titlebar=True)
 
         while True:
-            event_namefile, namefile = namefile_window.read()
+            event_namefile, namefile_input = namefile_window.read()
 
-            if event_namefile == sg.WINDOW_CLOSED:
-                break
-            elif event_namefile == 'Submit':
-                #DA SISTEMARE: FAI CONTROLLO ESISTENZA FILE PER EVITARE SOVRASCRITTURA
-                f = open(namefile.get('-INPUT-'), "a")
-                f.close()
-                Main.namefile = Main.path + namefile.get('-INPUT-')
-                break
+            if event_namefile == 'Submit':
+                Main.namefile = Main.path + namefile_input.get('-INPUT-')      #extract namefile from dict
+
+                if os.path.exists(Main.namefile) == True:           #check existence of file
+                    namefile_window['-OUTP-'].update("The file is already exist, if you want to open use the button Open")
+                    continue
+                else:
+                    f = open(Main.namefile, "a")
+                    f.close()
+                    break
 
         namefile_window.close()
-
-        sg.WINDOW_CLOSED = False
 
         return Main.namefile
 
@@ -77,9 +76,8 @@ class Main:
         sg.theme('DarkBlue12')
 
         layout = [
-            [sg.Text("Write here")],
-            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(100,4), key='-OUT-')],
-            [sg.Multiline(size=(130,50), key='-INPUT-'), sg.Output(size=(25,50), key='-OUTPUT-')],
+            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(106,4), key='-OUT-')],
+            [sg.Multiline(size=(130,50), key='-INPUT-'), sg.Output(size=(32,50), key='-OUTPUT-')],
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
@@ -157,7 +155,7 @@ class Main:
                 Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
                 break
 
-            if event_main == 'Quit' or event_main == sg.WINDOW_CLOSED:              #quit
+            if event_main == 'Quit':              #quit
                 esc = 0
                 layout = [
                     [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
@@ -184,6 +182,8 @@ class Main:
                     if esc == 0:
                         continue
 
+                if event_main == sg.WINDOW_CLOSED:
+                    break
 
         main_window.close()
 
@@ -281,7 +281,7 @@ class Search_class(Write_read):  #Main class is ereditary by Write_read, multile
             [sg.Button('Search in file'), sg.Button('Search in all the file'), sg.Button('Quit')]
         ]
 
-        window_search = sg.Window('Search page', layout)
+        window_search = sg.Window('Search page', layout, no_titlebar=True)
 
         while True:
             event, searched_string_input = window_search.read()
