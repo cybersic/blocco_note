@@ -84,9 +84,9 @@ class Main:
         while True:
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
-            main_window['-OUT-'].update(Main.path)
             main_window['-OUTPUT-'].update(os.listdir(Main.path))      #finestra current path con file presenti in current folder
-                                                                       #DA SISTEMARE OUTPUT
+                                                                       #DA SISTEMARE OUTPUT (aspetta un altro comando per eseguire update,
+                                                                       #non va a capo)
 
             Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
