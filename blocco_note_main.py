@@ -34,6 +34,8 @@ class Main:
 
         path_window.close()
 
+        sg.WINDOW_CLOSED = False
+
         return Main.path
 
     def namefile_func(namefile):
@@ -54,12 +56,15 @@ class Main:
             if event_namefile == sg.WINDOW_CLOSED:
                 break
             elif event_namefile == 'Submit':
+                #DA SISTEMARE: FAI CONTROLLO ESISTENZA FILE PER EVITARE SOVRASCRITTURA
                 f = open(namefile.get('-INPUT-'), "a")
                 f.close()
                 Main.namefile = Main.path + namefile.get('-INPUT-')
                 break
 
         namefile_window.close()
+
+        sg.WINDOW_CLOSED = False
 
         return Main.namefile
 
@@ -73,20 +78,26 @@ class Main:
 
         layout = [
             [sg.Text("Write here")],
-            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(92,3), key='-OUT-')],
+            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(100,4), key='-OUT-')],
             [sg.Multiline(size=(130,50), key='-INPUT-'), sg.Output(size=(25,50), key='-OUTPUT-')],
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
-        Main.path_func(Main.path)
-        main_window = sg.Window('Homepage', layout)
+        main_window = sg.Window('Homepage', layout)              #starting main window
 
+        counter = 0         #for start path window only first time
         while True:
+            if counter > 0:
+                main_window['-OUTPUT-'].update(os.listdir(Main.path))  #finestra current path con file presenti in current folder
+                                                                       #DA SISTEMARE OUTPUT (non va a capo)
+                main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)                 #mostra path e file nella finestra -OUT-
+
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
-            main_window['-OUTPUT-'].update(os.listdir(Main.path))      #finestra current path con file presenti in current folder
-                                                                       #DA SISTEMARE OUTPUT (aspetta un altro comando per eseguire update,
-                                                                       #non va a capo)
+            if counter < 1:
+                Main.path_func(Main.path)                                    #starting path window
+                counter += 1
+
 
             Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
