@@ -143,7 +143,6 @@ class Main:
                 if Main.namefile == "":
                     Main.namefile_func(Main.namefile)
 
-                #fai flush roba gia salvata                                 DA SISTEMARE
                 Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
                 break
 
