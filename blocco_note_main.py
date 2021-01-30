@@ -104,7 +104,7 @@ class Main:
                     [sg.Button('Y'), sg.Button('N')]
                 ]
 
-                quit_window = sg.Window('Quitting page', layout)            #quitting page (y/n)
+                quit_window = sg.Window('Quitting page', layout, no_titlebar=True)            #quitting page (y/n)
 
                 while True:
                     event_quit, null = quit_window.read()
