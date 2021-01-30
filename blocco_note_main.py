@@ -94,6 +94,9 @@ class Main:
 
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
+            if event_main == sg.WINDOW_CLOSED:
+                break
+
             if counter < 1:
                 Main.path_func(Main.path)                                    #starting path window (only first time)
                 counter += 1
