@@ -72,6 +72,7 @@ class Main:
         """
         Main function
         """
+        
 
         sg.theme('DarkBlue12')
 
@@ -85,6 +86,7 @@ class Main:
 
         counter = 0         #for start path window only first time
         while True:
+            mytext = {"":""}
             if counter > 0:
                 main_window['-OUTPUT-'].update(os.listdir(Main.path))  #finestra current path con file presenti in current folder
                                                                        #DA SISTEMARE OUTPUT (non va a capo)
@@ -93,7 +95,7 @@ class Main:
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
             if counter < 1:
-                Main.path_func(Main.path)                                    #starting path window
+                Main.path_func(Main.path)                                    #starting path window (only first time)
                 counter += 1
 
 
@@ -190,15 +192,10 @@ class Main:
         return Main.mytext
 
 
-class Write_read(Main):
+class Write_read(Main):  #Main class inheritance
     """
-    Write and read class, inheritance by main
+    Write and read class
     """
-    row = 0
-
-    word = ""
-    all_word = {}
-
     def read(namefile):
         """
         read from file
@@ -216,49 +213,53 @@ class Write_read(Main):
         return f.write(mytext)
 
 
-class Search_class(Write_read):  #Main class is ereditary by Write_read, multilevel inerhitance
+class Search_class(Main):  #Main class inheritance
     """
     search page class
     """
-    searched_string = ""                        #stringa cercata
-    file_riga = ()                              #tupla con nome del file e riga della stringa cercata
+    #var
+    tag = ""                                    #stringa cercata
+    row = 0                                     #row of the word searched
+    word = ""                                   #word compariser
+    file_riga = {}                              #dict with "File" as key and Main.namefile as value, "Row" as key and Search_class.row as value
+
 
     def search_local_file(file_riga):
         """
         search in local file
         """
 
-        if Main.namefile == "":
-            Main.namefile_func(Main.namefile)                                                   #inserisci namefile se assente
+        if Main.namefile == "":                                                                    #insert namefile if not defined
+            layout = [
+                [sg.Text("Write here the name of the file")],
+                [sg.Input(size=(50,20), key='-INPUT-'), sg.Button('Submit')],
+            ]
+
+            namefile_window = sg.Window('Name of the file', layout, no_titlebar=True)
+
+            while True:
+                event_namefile, namefile_input = namefile_window.read()
+
+                if event_namefile == 'Submit':
+                    Main.namefile = Main.path + namefile_input.get('-INPUT-')      #extract namefile from dict
+                    f = open(Main.namefile, "a")
+                    f.close()
+                    break
+
+            namefile_window.close()
+
 
         f = open(Main.namefile, "r")
+        Search_class.row = 0
         for line in f:
-            Write_read.row += 1
-            for Write_read.word in line.split(" "):
-                Write_read.all_word[Write_read.row] = Write_read.word           #put the word in a dictionary with correct row as key
-
-
-        exit_var = 1
-        while True:
-            if exit_var == 0:
-                break
-            print("parola cercata", Search_class.searched_string, type(Search_class.searched_string))                     #test
-            print("parola da cercare nel dict", Write_read.word, type(Write_read.word))                                   #test
-            print("parole nel dict", Write_read.all_word, type(Write_read.all_word))                                      #test
-
-            for Write_read.word in Write_read.all_word.values():
-                print("parola", Write_read.word)                                                                          #test
-                if Search_class.searched_string + "\n" == Write_read.word:     #SISTEMA READ (CRASH SE PAROLE IN STESSA RIGA)
-                    Search_class.file_riga = (Main.namefile, Write_read.row)
-
-                    print("file e riga:", Search_class.file_riga)                                                         #test
-
-                    Search_class.searched_string = ""                   #SISTEMA FLUSH DELLE VARIABILI
-                    Write_read.all_word = {}
-                    Write_read.word = ""
-
-                    exit_var = 0
-                    break
+            Search_class.row += 1
+            for word in line.split(" "):
+                if Search_class.tag == word:
+                    Search_class.file_riga = {
+                            "File" : Main.namefile,
+                            "Row" : Search_class.row
+                        }
+        f.close()
 
         return Search_class.file_riga
 
@@ -267,6 +268,35 @@ class Search_class(Write_read):  #Main class is ereditary by Write_read, multile
         """
         search in all file
         """
+        all_file = []
+        key = 0
+
+        controller_1 = True
+        controller_2 = True
+
+        for file_in_path in os.listdir(Main.path):              #insert in a dict all file in current path
+           if os.path.isfile(os.path.join(Main.path, file_in_path)):
+               all_file.append(file_in_path)
+
+        while controller_1 == True:
+            actual_file = Main.path + all_file[key]               #change of actual_file
+
+            d = open(actual_file, "r")
+
+            Search_class.row = 0
+            for line in d:
+                Search_class.row += 1
+                for word in line.split(" "):
+                    if Search_class.tag == word:
+                        Search_class.file_riga = {
+                                "File" : actual_file,
+                                "Row" : Search_class.row
+                            }
+                        controller_1 = False
+            d.close()
+
+            key += 1                                            #update the key to access list of file
+
         return Search_class.file_riga
 
 
@@ -275,30 +305,31 @@ class Search_class(Write_read):  #Main class is ereditary by Write_read, multile
         main func search
         """
         layout = [
-            [sg.Text("Search here")],
+            [sg.Text("Search the tag here")],
             [sg.Input(size=(70,30), key='-INPUT-')],
-            [sg.Text(size=(15,1), key='-OUTPUT-')],
+            [sg.Output(size=(70,1), key='-OUTPUT_SEARCH-')],
             [sg.Button('Search in file'), sg.Button('Search in all the file'), sg.Button('Quit')]
         ]
 
         window_search = sg.Window('Search page', layout, no_titlebar=True)
 
         while True:
-            event, searched_string_input = window_search.read()
+            event, tag_input = window_search.read()
 
-            Search_class.searched_string = searched_string_input.get('-INPUT-')
+            Search_class.tag = tag_input.get('-INPUT-')
 
             if event == 'Search in file':
-                Search_class.searched_string = searched_string_input.get('-INPUT-')               #take the searched string from input
+                Search_class.tag = tag_input.get('-INPUT-')               #take the searched string from input
                 Search_class.search_local_file(Search_class.file_riga)                            #search in local file
                 print(Search_class.file_riga)                                   #test
-                [window_search['-OUTPUT-'].update(Search_class.file_riga)]                        #update in search_window
 
             if event == 'Search in all the file':
                 Search_class.search_all_file(Search_class.file_riga)
 
             if event == sg.WINDOW_CLOSED or event == 'Quit':
                 break
+
+            [window_search['-OUTPUT_SEARCH-'].update(Search_class.file_riga)]                        #update in search_window
 
         window_search.close()
 
