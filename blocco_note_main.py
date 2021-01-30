@@ -77,8 +77,8 @@ class Main:
         sg.theme('DarkBlue12')
 
         layout = [
-            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(106,4), key='-OUT-')],
-            [sg.Multiline(size=(130,50), key='-INPUT-'), sg.Output(size=(32,50), key='-OUTPUT-')],
+            [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(106,4), key='-OUT-')],
+            [sg.Multiline(size=(145,50), key='-INPUT-'), sg.Output(size=(32,50), key='-OUTPUT-')],
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
@@ -98,10 +98,11 @@ class Main:
                 Main.path_func(Main.path)                                    #starting path window (only first time)
                 counter += 1
 
-
             Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
             #operation section
+            if event_main == 'Set the Path':
+                Main.path_func(Main.path)                                    #starting path window
 
             if event_main == 'Save':
                 if Main.namefile == "":
