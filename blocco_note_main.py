@@ -325,7 +325,6 @@ class Search_class(Main):  #Main class inheritance
             if event == 'Search in file':
                 Search_class.tag = tag_input.get('-INPUT-')               #take the searched string from input
                 Search_class.search_local_file(Search_class.file_riga)                            #search in local file
-                print(Search_class.file_riga)                                   #test
 
             if event == 'Search in all the file':
                 Search_class.search_all_file(Search_class.file_riga)
