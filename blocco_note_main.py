@@ -86,7 +86,7 @@ class Main:
 
         counter = 0         #for start path window only first time
         while True:
-            mytext = {"":""}
+            mytext = {"":""}                                            #initialization of mytext (if you don't write nothing you not have problem when you close)
             if counter > 0:
                 main_window['-OUTPUT-'].update(os.listdir(Main.path))  #finestra current path con file presenti in current folder
                                                                        #DA SISTEMARE OUTPUT (non va a capo)
