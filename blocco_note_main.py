@@ -131,7 +131,7 @@ class Main:
                 open_window.close()
 
             if event_main == 'Search':
-                Search_class.main_search_func()                           #go to search page            DA SISTEMARE
+                Search_class.main_search_func()                           #go to search page
 
             if event_main == 'Open terminal':                                #open terminal
                 if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
