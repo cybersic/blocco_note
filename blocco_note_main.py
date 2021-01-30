@@ -94,14 +94,47 @@ class Main:
 
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
+
+            #quit section
+
+            if event_main == 'Quit':              #quit
+                esc = 0
+                layout = [
+                    [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
+                    [sg.Button('Y'), sg.Button('N')]
+                ]
+
+                quit_window = sg.Window('Quitting page', layout)            #quitting page (y/n)
+
+                while True:
+                    event_quit, null = quit_window.read()
+
+                    if event_quit == 'N':
+                        esc = 0
+                    else:
+                        esc = 1
+
+                    break
+
+                quit_window.close()
+
+                if esc == 1:
+                    break
+                else:
+                    if esc == 0:
+                        continue
+
             if event_main == sg.WINDOW_CLOSED:
                 break
+
 
             if counter < 1:
                 Main.path_func(Main.path)                                    #starting path window (only first time)
                 counter += 1
 
+
             Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
+
 
             #operation section
             if event_main == 'Set the Path':
@@ -115,6 +148,13 @@ class Main:
             if event_main == 'Save as':
                 Main.namefile_func(Main.namefile)
                 Write_read.write(Main.mytext, Main.namefile)             #write on file
+
+            if event_main == 'Save and Quit':
+                if Main.namefile == "":
+                    Main.namefile_func(Main.namefile)
+
+                Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
+                break
 
             if event_main == 'Open':
                 layout = [[sg.T("")], [sg.Text("Choose a file: "), sg.Input(key='-INP-'), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],[sg.Button("Submit")]]
@@ -150,46 +190,6 @@ class Main:
                     terminal_path = "gnome-terminal --working-directory='" + Main.path + "' || Konsole "  + Main.path
 
                 os.system(terminal_path)            #lauch the terminal with the correct path
-
-
-            #quit section
-
-            if event_main == 'Save and Quit':
-                if Main.namefile == "":
-                    Main.namefile_func(Main.namefile)
-
-                Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
-                break
-
-            if event_main == 'Quit':              #quit
-                esc = 0
-                layout = [
-                    [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
-                    [sg.Button('Y'), sg.Button('N')]
-                ]
-
-                quit_window = sg.Window('Quitting page', layout)            #quitting page (y/n)
-
-                while True:
-                    event_quit, null = quit_window.read()
-
-                    if event_quit == 'N':
-                        esc = 0
-                    else:
-                        esc = 1
-
-                    break
-
-                quit_window.close()
-
-                if esc == 1:
-                    break
-                else:
-                    if esc == 0:
-                        continue
-
-                if event_main == sg.WINDOW_CLOSED:
-                    break
 
         main_window.close()
 
