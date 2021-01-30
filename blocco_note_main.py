@@ -82,7 +82,7 @@ class Main:
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
-        main_window = sg.Window('Homepage', layout, grab_anywhere=True)              #starting main window
+        main_window = sg.Window('Homepage', layout)              #starting main window
 
         counter = 0         #for start path window only first time
         while True:
@@ -104,7 +104,7 @@ class Main:
                     [sg.Button('Y'), sg.Button('N')]
                 ]
 
-                quit_window = sg.Window('Quitting page', layout, no_titlebar=True, grab_anywhere=True)            #quitting page (y/n)
+                quit_window = sg.Window('Quitting page', layout, no_titlebar=True)            #quitting page (y/n)
 
                 while True:
                     event_quit, null = quit_window.read()
@@ -159,7 +159,7 @@ class Main:
             if event_main == 'Open':
                 layout = [[sg.T("")], [sg.Text("Choose a file: "), sg.Input(key='-INP-'), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],[sg.Button("Submit")]]
 
-                open_window = sg.Window('Open file', layout, size=(600,150), grab_anywhere=True)
+                open_window = sg.Window('Open file', layout, size=(600,150))
 
                 while True:                                         #browsing the file
                     event, to_open = open_window.read()
@@ -239,7 +239,7 @@ class Search_class(Main):  #Main class inheritance
                 [sg.Input(size=(50,20), key='-INPUT-'), sg.Button('Submit')],
             ]
 
-            namefile_window = sg.Window('Name of the file', layout, no_titlebar=True, grab_anywhere=True)
+            namefile_window = sg.Window('Name of the file', layout, no_titlebar=True)
 
             while True:
                 event_namefile, namefile_input = namefile_window.read()
