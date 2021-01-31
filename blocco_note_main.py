@@ -75,7 +75,7 @@ class Main:
 
         sg.theme('DarkBlue12')
 
-        """             #layout in 1920*1080
+        """             #layout in
         layout = [
             [sg.Button('Save and Quit'), sg.Button('Quit')],
             [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(190,4), key='-OUT-')],
@@ -90,6 +90,7 @@ class Main:
         ]
 
         main_window = sg.Window('Homepage', layout, return_keyboard_events=True, resizable=True, no_titlebar=False)              #starting main window
+        #DA SISTEMARE RESIZABLE
         #DA SISTEMARE - FAI SHORTCUT:  Ctrl + k, Ctrl + s, Ctrl + o, Ctrl + t
 
         counter = 0         #for start path window only first time
