@@ -72,9 +72,16 @@ class Main:
         """
         Main function
         """
-        
 
         sg.theme('DarkBlue12')
+
+        """             #layout in 1920*1080
+        layout = [
+            [sg.Button('Save and Quit'), sg.Button('Quit')],
+            [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(190,4), key='-OUT-')],
+            [sg.Multiline(size=(240,60), key='-INPUT-'), sg.Output(size=(40,60), key='-OUTPUT-')]
+        ]
+        """
 
         layout = [
             [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(106,4), key='-OUT-')],
@@ -82,7 +89,8 @@ class Main:
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
-        main_window = sg.Window('Homepage', layout)              #starting main window
+        main_window = sg.Window('Homepage', layout, return_keyboard_events=True, resizable=True, no_titlebar=False)              #starting main window
+        #DA SISTEMARE - FAI SHORTCUT:  Ctrl + k, Ctrl + s, Ctrl + o, Ctrl + t
 
         counter = 0         #for start path window only first time
         while True:
@@ -94,9 +102,7 @@ class Main:
 
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
-
             #quit section
-
             if event_main == 'Quit':              #quit
                 esc = 0
                 layout = [
@@ -159,7 +165,7 @@ class Main:
             if event_main == 'Open':
                 layout = [[sg.T("")], [sg.Text("Choose a file: "), sg.Input(key='-INP-'), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],[sg.Button("Submit")]]
 
-                open_window = sg.Window('Open file', layout, size=(600,150))
+                open_window = sg.Window('Open file', layout, no_titlebar=True)
 
                 while True:                                         #browsing the file
                     event, to_open = open_window.read()
