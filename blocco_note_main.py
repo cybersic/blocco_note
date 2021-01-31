@@ -26,9 +26,7 @@ class Main:
         while True:
             event, path = path_window.read()
 
-            if event == sg.WINDOW_CLOSED:
-                break
-            elif event == 'Ok':
+            if event == 'Ok':
                 Main.path = path.get('-INPUT-') + "/"
                 break
 
@@ -75,7 +73,7 @@ class Main:
 
         sg.theme('DarkBlue12')
 
-        """             #layout in
+        """             #layout in 1920*1080
         layout = [
             [sg.Button('Save and Quit'), sg.Button('Quit')],
             [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(190,4), key='-OUT-')],
@@ -91,7 +89,7 @@ class Main:
 
         main_window = sg.Window('Homepage', layout, return_keyboard_events=True, resizable=True, no_titlebar=False)              #starting main window
         #DA SISTEMARE RESIZABLE
-        #DA SISTEMARE - FAI SHORTCUT:  Ctrl + k, Ctrl + s, Ctrl + o, Ctrl + t
+        #DA SISTEMARE SHORTCUT (si avviano una sola volta):  Ctrl + q, Ctrl + k, Ctrl + s, Ctrl + o, Ctrl + f, Ctrl + t
 
         counter = 0         #for start path window only first time
         while True:
@@ -103,8 +101,10 @@ class Main:
 
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
+            print(event_main)
+
             #quit section
-            if event_main == 'Quit':              #quit
+            if event_main == 'Quit' or event_main == 'q:24':              #quit
                 esc = 0
                 layout = [
                     [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
@@ -144,10 +144,10 @@ class Main:
 
 
             #operation section
-            if event_main == 'Set the Path':
+            if event_main == 'Set the Path' or event_main == 'k:45':
                 Main.path_func(Main.path)                                    #starting path window
 
-            if event_main == 'Save':
+            if event_main == 'Save' or event_main == 's:39':
                 if Main.namefile == "":
                     Main.namefile_func(Main.namefile)
                 Write_read.write(Main.mytext, Main.namefile)             #write on file
@@ -163,16 +163,22 @@ class Main:
                 Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
                 break
 
-            if event_main == 'Open':
-                layout = [[sg.T("")], [sg.Text("Choose a file: "), sg.Input(key='-INP-'), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],[sg.Button("Submit")]]
+            if event_main == 'Open' or event_main == 'o:45':
+                layout = [
+                    [sg.T("")],
+                    [sg.Text("Choose a file: "), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],
+                    [sg.Button("Submit"), sg.Button("Quit")]
+                ]
 
                 open_window = sg.Window('Open file', layout, no_titlebar=True)
 
                 while True:                                         #browsing the file
                     event, to_open = open_window.read()
-                    if event == sg.WIN_CLOSED or event=="Exit":
+                    
+                    if event == 'Quit':
                         break
-                    elif event == "Submit":
+
+                    if event == "Submit":
                         to_open = to_open.get('-INP-')
                         Main.namefile = to_open
                         a = open(to_open, "r")
@@ -181,10 +187,10 @@ class Main:
                         break
                 open_window.close()
 
-            if event_main == 'Search':
+            if event_main == 'Search' or event_main == 'f:41':
                 Search_class.main_search_func()                           #go to search page
 
-            if event_main == 'Open terminal':                                #open terminal
+            if event_main == 'Open terminal' or event_main == 't:45':                                #open terminal
                 if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
                     Main.path_func(Main.path)
 
@@ -336,7 +342,7 @@ class Search_class(Main):  #Main class inheritance
             if event == 'Search in all the file':
                 Search_class.search_all_file(Search_class.file_riga)
 
-            if event == sg.WINDOW_CLOSED or event == 'Quit':
+            if event == 'Quit':
                 break
 
             [window_search['-OUTPUT_SEARCH-'].update(Search_class.file_riga)]                        #update in search_window
