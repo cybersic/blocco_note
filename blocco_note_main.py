@@ -18,7 +18,7 @@ class Main:
 
         layout = [
             [sg.Text("Write here the current path")],
-            [sg.FolderBrowse(key="-INPUT-"), sg.Button('Ok')]
+            [sg.FolderBrowse(key="-INPUT-"), sg.Button('Submit')]
         ]
 
         path_window = sg.Window('Path', layout, size=(230, 100), no_titlebar=True)
@@ -26,7 +26,7 @@ class Main:
         while True:
             event, path = path_window.read()
 
-            if event == 'Ok':
+            if event == 'Submit':
                 Main.path = path.get('-INPUT-') + "/"
                 break
 
@@ -88,8 +88,8 @@ class Main:
         ]
 
         main_window = sg.Window('Homepage', layout, return_keyboard_events=True, resizable=True, no_titlebar=False)              #starting main window
+        #DA SISTEMARE SHORTCUT
         #DA SISTEMARE RESIZABLE
-        #DA SISTEMARE SHORTCUT (si avviano una sola volta):  Ctrl + q, Ctrl + k, Ctrl + s, Ctrl + o, Ctrl + f, Ctrl + t
 
         counter = 0         #for start path window only first time
         while True:
@@ -101,7 +101,7 @@ class Main:
 
             event_main, mytext = main_window.read()                      #take the data from the main_window
 
-            print(event_main)
+            print(event_main)                   #test
 
             #quit section
             if event_main == 'Quit' or event_main == 'q:24':              #quit
@@ -163,7 +163,7 @@ class Main:
                 Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
                 break
 
-            if event_main == 'Open' or event_main == 'o:45':
+            if event_main == 'Open' or event_main == 'i:31':
                 layout = [
                     [sg.T("")],
                     [sg.Text("Choose a file: "), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],
