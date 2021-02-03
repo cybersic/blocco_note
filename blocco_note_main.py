@@ -1,4 +1,4 @@
-import PySimpleGUI as sg
+import PySimpleGUIQt as sg
 import platform
 import os
 
@@ -18,16 +18,20 @@ class Main:
 
         layout = [
             [sg.Text("Write here the current path")],
-            [sg.FolderBrowse(key="-INPUT-"), sg.Button('Submit')]
+            [sg.Input(key="-INPUT-" ,change_submits=True), sg.FolderBrowse(key="-IN2-"), sg.Button('Submit')]
         ]
 
-        path_window = sg.Window('Path', layout, size=(230, 100), no_titlebar=True)
+        path_window = sg.Window('Path', layout, size=(230, 100), no_titlebar=False)
 
         while True:
-            event, path = path_window.read()
+            event, tmp_path = path_window.read()
+
+            if event == sg.WIN_CLOSED:
+                Main.path = os.path.expanduser("~") + "/"
+                break
 
             if event == 'Submit':
-                Main.path = path.get('-INPUT-') + "/"
+                Main.path = tmp_path.get('-INPUT-') + "/"                   #DA SISTEMARE METTE None IN Main.path
                 break
 
         path_window.close()
@@ -45,10 +49,14 @@ class Main:
             [sg.Output(size=(60,1), key='-OUTP-')]
         ]
 
-        namefile_window = sg.Window('Name of the file', layout, no_titlebar=True)
+        namefile_window = sg.Window('Name of the file', layout, no_titlebar=False)
 
         while True:
             event_namefile, namefile_input = namefile_window.read()
+
+            if event_namefile == sg.WIN_CLOSED:
+                Main.namefile = Main.path + "nuovo.txt"
+                break
 
             if event_namefile == 'Submit':
                 Main.namefile = Main.path + namefile_input.get('-INPUT-')      #extract namefile from dict
@@ -82,8 +90,8 @@ class Main:
         """
 
         layout = [
-            [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(106,4), key='-OUT-')],
-            [sg.Multiline(size=(145,50), key='-INPUT-'), sg.Output(size=(32,50), key='-OUTPUT-')],
+            [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(96,4), key='-OUT-')],
+            [sg.Multiline(size=(135,30), key='-INPUT-'), sg.Output(size=(22,30), key='-OUTPUT-')],
             [sg.Button('Save and Quit'), sg.Button('Quit')]
         ]
 
@@ -95,7 +103,11 @@ class Main:
         while True:
             mytext = {"":""}                                            #initialization of mytext (if you don't write nothing you not have problem when you close)
             if counter > 0:
-                main_window['-OUTPUT-'].update(os.listdir(Main.path))  #finestra current path con file presenti in current folder
+                files_in_path = ""
+                for file in os.listdir(Main.path):
+                    files_in_path = files_in_path + " " + file
+
+                main_window['-OUTPUT-'].update(files_in_path)  #finestra current path con file presenti in current folder
                                                                        #DA SISTEMARE OUTPUT (non va a capo)
                 main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)                 #mostra path e file nella finestra -OUT-
 
@@ -104,14 +116,14 @@ class Main:
             print(event_main)                   #test
 
             #quit section
-            if event_main == 'Quit' or event_main == 'q:24':              #quit
+            if event_main == 'Quit' or event_main == 'q:24' or event_main == sg.WIN_CLOSED:              #quit
                 esc = 0
                 layout = [
                     [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
                     [sg.Button('Y'), sg.Button('N')]
                 ]
 
-                quit_window = sg.Window('Quitting page', layout, no_titlebar=True)            #quitting page (y/n)
+                quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
 
                 while True:
                     event_quit, null = quit_window.read()
@@ -131,7 +143,7 @@ class Main:
                     if esc == 0:
                         continue
 
-            if event_main == sg.WINDOW_CLOSED:
+            if event_main == sg.WIN_CLOSED:
                 break
 
 
@@ -166,16 +178,16 @@ class Main:
             if event_main == 'Open' or event_main == 'i:31':
                 layout = [
                     [sg.T("")],
-                    [sg.Text("Choose a file: "), sg.FileBrowse(initial_folder=Main.path, key='-INP-')],
+                    [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
                     [sg.Button("Submit"), sg.Button("Quit")]
                 ]
 
-                open_window = sg.Window('Open file', layout, no_titlebar=True)
+                open_window = sg.Window('Open file', layout, no_titlebar=False)
 
                 while True:                                         #browsing the file
                     event, to_open = open_window.read()
                     
-                    if event == 'Quit':
+                    if event == 'Quit' or event_main == 'q:24' or event_main == sg.WIN_CLOSED:
                         break
 
                     if event == "Submit":
@@ -238,7 +250,7 @@ class Search_class(Main):  #Main class inheritance
     tag = ""                                    #stringa cercata
     row = 0                                     #row of the word searched
     word = ""                                   #word compariser
-    file_riga = {}                              #dict with "File" as key and Main.namefile as value, "Row" as key and Search_class.row as value
+    file_riga = ""                              #string with file + row
 
 
     def search_local_file(file_riga):
@@ -249,16 +261,16 @@ class Search_class(Main):  #Main class inheritance
         if Main.namefile == "":                                                                    #insert namefile if not defined
             layout = [
                 [sg.Text("Write here the name of the file")],
-                [sg.Input(size=(50,20), key='-INPUT-'), sg.Button('Submit')],
+                [sg.Input(size=(50,20), key='-INPU-'), sg.Button('Submit')]
             ]
 
-            namefile_window = sg.Window('Name of the file', layout, no_titlebar=True)
+            namefile_window = sg.Window('Name of the file', layout, no_titlebar=False)
 
             while True:
                 event_namefile, namefile_input = namefile_window.read()
 
                 if event_namefile == 'Submit':
-                    Main.namefile = Main.path + namefile_input.get('-INPUT-')      #extract namefile from dict
+                    Main.namefile = Main.path + namefile_input.get('-INPU-')      #extract namefile from dict
                     f = open(Main.namefile, "a")
                     f.close()
                     break
@@ -270,12 +282,10 @@ class Search_class(Main):  #Main class inheritance
         Search_class.row = 0
         for line in f:
             Search_class.row += 1
-            for word in line.split(" "):
-                if Search_class.tag == word:
-                    Search_class.file_riga = {
-                            "File" : Main.namefile,
-                            "Row" : Search_class.row
-                        }
+            for Search_class.word in line.split(" "):
+                if Search_class.tag == Search_class.word:
+                    Search_class.row = str(Search_class.row)
+                    Search_class.file_riga = "File:" + Main.namefile + " Row:" + Search_class.row
         f.close()
 
         return Search_class.file_riga
@@ -305,10 +315,7 @@ class Search_class(Main):  #Main class inheritance
                 Search_class.row += 1
                 for word in line.split(" "):
                     if Search_class.tag == word:
-                        Search_class.file_riga = {
-                                "File" : actual_file,
-                                "Row" : Search_class.row
-                            }
+                        Search_class.file_riga = "File:" + actual_file + " Row:" + Search_class.row
                         controller_1 = False
             d.close()
 
@@ -328,7 +335,7 @@ class Search_class(Main):  #Main class inheritance
             [sg.Button('Search in file'), sg.Button('Search in all the file'), sg.Button('Quit')]
         ]
 
-        window_search = sg.Window('Search page', layout, no_titlebar=True)
+        window_search = sg.Window('Search page', layout, no_titlebar=False)
 
         while True:
             event, tag_input = window_search.read()
@@ -342,7 +349,7 @@ class Search_class(Main):  #Main class inheritance
             if event == 'Search in all the file':
                 Search_class.search_all_file(Search_class.file_riga)
 
-            if event == 'Quit':
+            if event == 'Quit' or event == sg.WIN_CLOSED:
                 break
 
             [window_search['-OUTPUT_SEARCH-'].update(Search_class.file_riga)]                        #update in search_window
