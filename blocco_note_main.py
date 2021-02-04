@@ -10,7 +10,7 @@ class Main:
     namefile = ""
     mytext = ""
     path = ""
-    dw = 1                  #Dark or White
+    dw = 1                  #Dark or White mode
 
     def path_func(path):
         """
@@ -22,7 +22,7 @@ class Main:
             [sg.Input(size=(30, 1), key="-INPUT-" ,change_submits=True), sg.FolderBrowse(key="-IN2-"), sg.Button('Submit')]
         ]
 
-        path_window = sg.Window(
+        path_window = sg.Window(                                #starting path window
                                 'Path',
                                 layout,
                                 size=(230, 100),
@@ -55,7 +55,7 @@ class Main:
             [sg.Output(size=(60,1), key='-OUTP-')]
         ]
 
-        namefile_window = sg.Window(
+        namefile_window = sg.Window(                                #starting namefile window
                                     'Name of the file',
                                     layout,
                                     size=(230, 100),
@@ -112,11 +112,12 @@ class Main:
         ]
 
         main_window = sg.Window('Homepage',                                      #starting main window
-                                layout,
-                                font=('Arial', 12),
-                                return_keyboard_events=True,
-                                resizable=True,
-                                no_titlebar=False)
+                                    layout,
+                                    font=('Arial', 12),
+                                    return_keyboard_events=True,
+                                    resizable=True,
+                                    no_titlebar=False
+                                )
                                                                             #DA SISTEMARE SHORTCUT
                                                                             #DA SISTEMARE RESIZABLE
 
