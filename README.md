@@ -1,3 +1,2 @@
-this is the 0.8 version of text editor
-you need pysimplegui library and python3.* for use it
-
+This is the 0.8 version of text editor
+You need PySimpleGUIQt library and python3.5 or up for use it
