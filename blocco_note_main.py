@@ -7,11 +7,13 @@ class Main:
     """
     Main class
     """
-    namefile = ""
+    #main_window 
+    quitter = 0
     mytext = ""
+    namefile = ""
     path = ""
-    dw = 1                  #Dark or White mode bool selector
-    dw = bool(dw)
+    dw = 0                  #Dark or White mode bool selector (default dark)
+    dw = bool(dw)           #cast dw to bool
 
     def path_func(path):
         """
@@ -95,166 +97,176 @@ class Main:
         """
         Main function
         """
+        controller_dw = 0       #set to 0 the controller for output the text after dw
 
-        sg.theme('Dark')
+        while Main.quitter == 0:
+            if Main.dw == 0:
+                sg.theme('Dark')
+            elif Main.dw == 1:
+                sg.theme('SystemDefault')
 
-        frame1 = [
-            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Set the Path'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(60,4), key='-OUT-'), sg.Stretch()],
-        ]
+            frame1 = [
+                [sg.Button('Save'), sg.Button('Save as'), sg.Button('Set the Path'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(60,4), key='-OUT-'), sg.Stretch()],
+            ]
 
-        frame2 = [
-            [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.Output(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
-        ]
+            frame2 = [
+                [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.Output(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+            ]
 
-        frame3 = [
-            [sg.Button('Save and Quit'), sg.Button('Quit'), sg.Stretch()] #add sg.Button('Dark/White') for dark or white mode
-        ]
+            frame3 = [
+                [sg.Button('Dark/White'), sg.Button('Save and Quit'), sg.Button('Quit'), sg.Stretch()] #add sg.Button('Dark/White'), for dark or white mode
+            ]
 
+            layout = [
+                    [sg.Frame('', frame1), sg.Stretch()],           #center this frame
+                    [sg.Frame('', frame2)],
+                    [sg.Frame('', frame3), sg.Stretch()]
+            ]
 
-        layout = [
-                [sg.Frame('', frame1), sg.Stretch()],           #center this frame
-                [sg.Frame('', frame2)],
-                [sg.Frame('', frame3), sg.Stretch()]
-        ]
+            main_window = sg.Window('Homepage',                                      #starting main window
+                                        layout,
+                                        font=('Arial', 12),
+                                        return_keyboard_events = True,
+                                        resizable = True,
+                                        no_titlebar = False
+                                    )
 
+                                                                                #DA SISTEMARE SHORTCUT
+                                                                                #DA SISTEMARE RESIZABLE
 
-        main_window = sg.Window('Homepage',                                      #starting main window
-                                    layout,
-                                    font=('Arial', 12),
-                                    return_keyboard_events = True,
-                                    resizable = True,
-                                    no_titlebar = False
-                                )
+            counter = 0         #for start path window only first time
+            while True:
+                mytext = {"":""}                                            #initialization of mytext (if you don't write nothing you not have problem when you close)
+                if counter > 0:
+                    files_in_path = ""
+                    for file in os.listdir(Main.path):
+                        files_in_path = files_in_path + file + "\n"
 
-                                                                            #DA SISTEMARE SHORTCUT
-                                                                            #DA SISTEMARE RESIZABLE
+                    main_window['-OUTPUT-'].update(files_in_path)  #window files in current path
 
-        counter = 0         #for start path window only first time
-        while True:
-            mytext = {"":""}                                            #initialization of mytext (if you don't write nothing you not have problem when you close)
-            if counter > 0:
-                files_in_path = ""
-                for file in os.listdir(Main.path):
-                    files_in_path = files_in_path + file + "\n"
+                    main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
 
-                main_window['-OUTPUT-'].update(files_in_path)  #window files in current path
+                event_main, mytext = main_window.read(timeout=1)                      #take the data from the main_window
 
-                main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
+                if controller_dw == True:
+                    main_window['-INPUT-'].update(Main.mytext)                     #import last mytext if change dw
+                    controller_dw = False
+                print(event_main)                   #test
 
-            event_main, mytext = main_window.read(timeout=1)                      #take the data from the main_window
+                #quit section
+                if event_main == sg.WIN_CLOSED:
+                    Main.quitter = 1
+                    break
 
-            print(event_main)                   #test
+                if event_main == 'Quit' or event_main == 'q:24':              #quit
+                    esc = 0
+                    layout = [
+                        [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
+                        [sg.Button('Y'), sg.Button('N'), sg.Stretch()]
+                    ]
 
-            #quit section
-            if event_main == sg.WIN_CLOSED:
-                break
+                    quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
 
-            if event_main == 'Quit' or event_main == 'q:24':              #quit
-                esc = 0
-                layout = [
-                    [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
-                    [sg.Button('Y'), sg.Button('N'), sg.Stretch()]
-                ]
+                    while True:
+                        event_quit, null = quit_window.read()
 
-                quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
+                        if event_quit == 'N':
+                            esc = 0
+                        else:
+                            esc = 1
+                            Main.quitter = 1
 
-                while True:
-                    event_quit, null = quit_window.read()
+                        break
 
-                    if event_quit == 'N':
-                        esc = 0
+                    quit_window.close()
+
+                    if esc == 1:
+                        break
                     else:
-                        esc = 1
+                        if esc == 0:
+                            continue
 
+
+                if counter < 1:
+                    if Main.path == "":
+                        Main.path_func(Main.path)                                    #starting path window (only first time)
+                    counter += 1
+
+
+                Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
+
+
+                #operation section
+                if event_main == 'Dark/White':                      #change to dark or white mode theme
+                    controller_dw = True
+                    if Main.dw == 0:
+                        Main.dw = 1
+                    elif Main.dw == 1:
+                        Main.dw = 0
                     break
 
-                quit_window.close()
+                if event_main == 'Set the Path' or event_main == 'k:45':
+                    Main.path_func(Main.path)                                    #starting path window
 
-                if esc == 1:
+                if event_main == 'Save' or event_main == 's:39':
+                    if Main.namefile == "":
+                        Main.namefile_func(Main.namefile)
+                    Write_read.write(Main.mytext, Main.namefile)             #write on file
+
+                if event_main == 'Save as':
+                    Main.namefile_func(Main.namefile)
+                    Write_read.write(Main.mytext, Main.namefile)             #write on file
+
+                if event_main == 'Save and Quit':
+                    if Main.namefile == "":
+                        Main.namefile_func(Main.namefile)
+
+                    Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
+                    Main.quitter = 1
                     break
-                else:
-                    if esc == 0:
-                        continue
 
+                if event_main == 'Open' or event_main == 'i:31':
+                    layout = [
+                        [sg.T("")],
+                        [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
+                        [sg.Button("Submit"), sg.Button("Quit")]
+                    ]
 
-            if counter < 1:
-                Main.path_func(Main.path)                                    #starting path window (only first time)
-                counter += 1
+                    open_window = sg.Window('Open file', layout, no_titlebar=False)
 
+                    while True:                                         #browsing the file
+                        event, to_open = open_window.read()
+                        
+                        if event == 'Quit' or event_main == 'q:24' or event_main == sg.WIN_CLOSED:
+                            break
 
-            Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
+                        if event == "Submit":
+                            to_open = to_open.get('-INP-')
+                            Main.namefile = to_open
+                            a = open(to_open, "r")
+                            main_window['-INPUT-'].update(a.read())                              #go to open page
+                            a.close()
+                            break
+                    open_window.close()
 
+                if event_main == 'Search' or event_main == 'f:41':
+                    Search_class.main_search_func()                           #go to search page
 
-            #operation section
-            if event_main == 'Dark/White':                      #change to dark or white mode theme
-                if Main.dw == 0:
-                    sg.ChangeLookAndFeel('Dark') #sg.theme('Dark')
-                    Main.dw = 1
-                elif Main.dw == 1:
-                    sg.ChangeLookAndFeel('SystemDefault') #sg.theme('SystemDefault')
-                    Main.dw = 0
+                if event_main == 'Open terminal' or event_main == 't:45':                                #open terminal
+                    if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
+                        Main.path_func(Main.path)
 
-            if event_main == 'Set the Path' or event_main == 'k:45':
-                Main.path_func(Main.path)                                    #starting path window
+                    if platform.system() == "Windows":                          #choose the correct OS
+                        terminal_path = "start cmd.exe " + Main.path
+                    elif platform.system() == "Darwin":
+                        terminal_path = "Terminal " + Main.path
+                        os.system("Terminal .")
+                    elif platform.system() == "Linux":
+                        terminal_path = "gnome-terminal --working-directory='" + Main.path + "' || Konsole "  + Main.path
 
-            if event_main == 'Save' or event_main == 's:39':
-                if Main.namefile == "":
-                    Main.namefile_func(Main.namefile)
-                Write_read.write(Main.mytext, Main.namefile)             #write on file
+                    os.system(terminal_path)            #lauch the terminal with the correct path
 
-            if event_main == 'Save as':
-                Main.namefile_func(Main.namefile)
-                Write_read.write(Main.mytext, Main.namefile)             #write on file
-
-            if event_main == 'Save and Quit':
-                if Main.namefile == "":
-                    Main.namefile_func(Main.namefile)
-
-                Write_read.write(Main.mytext, Main.namefile)              #write on file and quit
-                break
-
-            if event_main == 'Open' or event_main == 'i:31':
-                layout = [
-                    [sg.T("")],
-                    [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
-                    [sg.Button("Submit"), sg.Button("Quit")]
-                ]
-
-                open_window = sg.Window('Open file', layout, no_titlebar=False)
-
-                while True:                                         #browsing the file
-                    event, to_open = open_window.read()
-                    
-                    if event == 'Quit' or event_main == 'q:24' or event_main == sg.WIN_CLOSED:
-                        break
-
-                    if event == "Submit":
-                        to_open = to_open.get('-INP-')
-                        Main.namefile = to_open
-                        a = open(to_open, "r")
-                        main_window['-INPUT-'].update(a.read())                              #go to open page
-                        a.close()
-                        break
-                open_window.close()
-
-            if event_main == 'Search' or event_main == 'f:41':
-                Search_class.main_search_func()                           #go to search page
-
-            if event_main == 'Open terminal' or event_main == 't:45':                                #open terminal
-                if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
-                    Main.path_func(Main.path)
-
-                if platform.system() == "Windows":                          #choose the correct OS
-                    terminal_path = "start cmd.exe " + Main.path
-                elif platform.system() == "Darwin":
-                    terminal_path = "Terminal " + Main.path
-                    os.system("Terminal .")
-                elif platform.system() == "Linux":
-                    terminal_path = "gnome-terminal --working-directory='" + Main.path + "' || Konsole "  + Main.path
-
-                os.system(terminal_path)            #lauch the terminal with the correct path
-
-        main_window.close()
+            main_window.close()
 
         return Main.mytext
 
