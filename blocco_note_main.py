@@ -10,7 +10,8 @@ class Main:
     namefile = ""
     mytext = ""
     path = ""
-    dw = 1                  #Dark or White mode
+    dw = 1                  #Dark or White mode bool selector
+    dw = bool(dw)
 
     def path_func(path):
         """
@@ -18,8 +19,8 @@ class Main:
         """
 
         layout = [
-            [sg.Text("Write here the current path")],
-            [sg.Input(size=(30, 1), key="-INPUT-" ,change_submits=True), sg.FolderBrowse(key="-IN2-"), sg.Button('Submit')]
+            [sg.Text("Write here the current path"), sg.Stretch()],
+            [sg.Input(size=(30, 1), key="-INPUT-" ,change_submits=True), sg.FolderBrowse(key="-IN2-"), sg.Button('Submit'), sg.Stretch()]
         ]
 
         path_window = sg.Window(                                #starting path window
@@ -32,12 +33,18 @@ class Main:
         while True:
             event, tmp_path = path_window.read()
 
-            if event == sg.WIN_CLOSED:
-                Main.path = os.path.expanduser("~") + "/"
+            if event == sg.WIN_CLOSED:                                      #set home if closed not set
+                if platform.system() == "Windows":                 #for windows
+                    Main.path = os.path.expanduser("~") + "\\"              
+                else:                                              #for other
+                    Main.path = os.path.expanduser("~") + "/"
                 break
 
             if event == 'Submit':
-                Main.path = tmp_path.get('-INPUT-') + "/"                   #DA SISTEMARE METTE None IN Main.path
+                if platform.system() == "Windows":
+                    Main.path = tmp_path.get('-INPUT-') + "\\"
+                else:
+                    Main.path = tmp_path.get('-INPUT-') + "/"
                 break
 
         path_window.close()
@@ -50,9 +57,8 @@ class Main:
         """
 
         layout = [
-            [sg.Text("Write here the name of the file")],
-            [sg.Input(size=(50,1), key='-INPUT-'), sg.Button('Submit')],
-            [sg.Output(size=(60,1), key='-OUTP-')]
+            [sg.Input(size=(50,1), key='-INPUT-', default_text="Write here the name of the file"), sg.Button('Submit'), sg.Stretch()],
+            [sg.Output(size=(60,1), key='-OUTP-'), sg.Stretch()]
         ]
 
         namefile_window = sg.Window(                                #starting namefile window
@@ -93,31 +99,33 @@ class Main:
         sg.theme('Dark')
 
         frame1 = [
-            [sg.Button('Set the Path'), sg.Button('Save'), sg.Button('Save as'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(60,3), key='-OUT-'), sg.Stretch()],
+            [sg.Button('Save'), sg.Button('Save as'), sg.Button('Set the Path'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(60,4), key='-OUT-'), sg.Stretch()],
         ]
 
         frame2 = [
-            [sg.Multiline(size=(90,20), key='-INPUT-'), sg.Output(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+            [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.Output(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
         ]
 
         frame3 = [
-            [sg.Button('Save and Quit'), sg.Button('Quit'), sg.Stretch()] #add sg.Button('Dark/White'), for dark or white mode
+            [sg.Button('Save and Quit'), sg.Button('Quit'), sg.Stretch()] #add sg.Button('Dark/White') for dark or white mode
         ]
 
 
         layout = [
-                [sg.Frame('', frame1, sg.Stretch())],
-                [sg.Frame('', frame2), sg.Stretch(size=(180,90))],
+                [sg.Frame('', frame1), sg.Stretch()],           #center this frame
+                [sg.Frame('', frame2)],
                 [sg.Frame('', frame3), sg.Stretch()]
         ]
+
 
         main_window = sg.Window('Homepage',                                      #starting main window
                                     layout,
                                     font=('Arial', 12),
-                                    return_keyboard_events=True,
-                                    resizable=True,
-                                    no_titlebar=False
+                                    return_keyboard_events = True,
+                                    resizable = True,
+                                    no_titlebar = False
                                 )
+
                                                                             #DA SISTEMARE SHORTCUT
                                                                             #DA SISTEMARE RESIZABLE
 
@@ -144,8 +152,8 @@ class Main:
             if event_main == 'Quit' or event_main == 'q:24':              #quit
                 esc = 0
                 layout = [
-                    [sg.Text("Are you sure? If you haven't saved your work you will lost all")],
-                    [sg.Button('Y'), sg.Button('N')]
+                    [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
+                    [sg.Button('Y'), sg.Button('N'), sg.Stretch()]
                 ]
 
                 quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
@@ -180,11 +188,11 @@ class Main:
             #operation section
             if event_main == 'Dark/White':                      #change to dark or white mode theme
                 if Main.dw == 0:
-                    sg.theme('Dark')
-                    dw = 1
+                    sg.ChangeLookAndFeel('Dark') #sg.theme('Dark')
+                    Main.dw = 1
                 elif Main.dw == 1:
-                    sg.theme('SystemDefault')
-                    dw = 0
+                    sg.ChangeLookAndFeel('SystemDefault') #sg.theme('SystemDefault')
+                    Main.dw = 0
 
             if event_main == 'Set the Path' or event_main == 'k:45':
                 Main.path_func(Main.path)                                    #starting path window
