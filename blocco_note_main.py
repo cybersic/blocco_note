@@ -110,7 +110,7 @@ class Main:
             ]
 
             frame2 = [
-                [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.Output(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+                [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
             ]
 
             frame3 = [
@@ -137,21 +137,27 @@ class Main:
             counter = 0         #for start path window only first time
             while True:
                 mytext = {"":""}                                            #initialization of mytext (if you don't write nothing you not have problem when you close)
-                if counter > 0:
+                if counter > 2000:                               #if counter is too high report it to 0
+                    counter = 3
+
+                if (counter > 0 and counter % 3 == 0) or counter == 1:      #start only first time or on 3 multiple and > 0
                     files_in_path = ""
                     for file in os.listdir(Main.path):
-                        files_in_path = files_in_path + file + "\n"
+                        if "." not in file:                                             #check status file, if is hide file not add
+                            files_in_path = files_in_path + file + "\n"
+                            
 
-                    main_window['-OUTPUT-'].update(files_in_path)  #window files in current path
+                        main_window['-OUTPUT-'].update(files_in_path)                                                   #window files in current path
+                        main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
 
-                    main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
 
-                event_main, mytext = main_window.read(timeout=1)                      #take the data from the main_window
+                event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
                 if controller_dw == True:
-                    main_window['-INPUT-'].update(Main.mytext)                     #import last mytext if change dw
+                    main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
                     controller_dw = False
-                print(event_main)                   #test
+
+                #print(event_main)                   #test
 
                 #quit section
                 if event_main == sg.WIN_CLOSED:
@@ -190,7 +196,6 @@ class Main:
                 if counter < 1:
                     if Main.path == "":
                         Main.path_func(Main.path)                                    #starting path window (only first time)
-                    counter += 1
 
 
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
@@ -265,6 +270,8 @@ class Main:
                         terminal_path = "gnome-terminal --working-directory='" + Main.path + "' || Konsole "  + Main.path
 
                     os.system(terminal_path)            #lauch the terminal with the correct path
+
+                counter += 1                            #counter of loop
 
             main_window.close()
 
