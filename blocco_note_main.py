@@ -21,8 +21,7 @@ class Main:
         """
 
         layout = [
-            [sg.Text("Write here the current path"), sg.Stretch()],
-            [sg.Input(size=(30, 1), key="-INPUT-" ,change_submits=True), sg.FolderBrowse(key="-IN2-"), sg.Button('Submit'), sg.Stretch()]
+            [sg.Input(size=(30, 1), default_text="Write here the name of the file", key="-INPUT-" ,change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False), sg.Button('Submit', auto_size_button=False), sg.Stretch()]
         ]
 
         path_window = sg.Window(                                #starting path window
@@ -59,8 +58,8 @@ class Main:
         """
 
         layout = [
-            [sg.Input(size=(50,1), key='-INPUT-', default_text="Write here the name of the file"), sg.Button('Submit'), sg.Stretch()],
-            [sg.Output(size=(60,1), key='-OUTP-'), sg.Stretch()]
+            [sg.Input(size=(50,1), key='-INPUT-', default_text="Write here the name of the file"), sg.Button('Submit', auto_size_button=False), sg.Stretch()],
+            [sg.Output(size=(60,2), key='-OUTP-'), sg.Stretch()]
         ]
 
         namefile_window = sg.Window(                                #starting namefile window
@@ -106,21 +105,21 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save'), sg.Button('Save as'), sg.Button('Set the Path'), sg.Button('Open'), sg.Button('Search'), sg.Button("Open terminal"), sg.Output(size=(60,4), key='-OUT-'), sg.Stretch()],
+                [sg.Button('Save', auto_size_button=False), sg.Button('Save as', auto_size_button=False), sg.Button('Set the Path', auto_size_button=True), sg.Button('Open', auto_size_button=False), sg.Button("Open terminal", auto_size_button=True), sg.MultilineOutput(size=(60,4), key='-OUT-'), sg.Stretch(size=(70,4))],
             ]
 
             frame2 = [
-                [sg.Multiline(size=(90,20), key='-INPUT-', autoscroll = True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+                [sg.Stretch(), sg.Multiline(size=(90,20) , key='-INPUT-', autoscroll = True, enable_events=True, ), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
             ]
 
             frame3 = [
-                [sg.Button('Dark/White'), sg.Button('Save and Quit'), sg.Button('Quit'), sg.Stretch()] #add sg.Button('Dark/White'), for dark or white mode
+                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False)]
             ]
 
             layout = [
-                    [sg.Frame('', frame1), sg.Stretch()],           #center this frame
+                    [sg.Frame('', frame1)],
                     [sg.Frame('', frame2)],
-                    [sg.Frame('', frame3), sg.Stretch()]
+                    [sg.Frame('', frame3)]
             ]
 
             main_window = sg.Window('Homepage',                                      #starting main window
@@ -168,7 +167,7 @@ class Main:
                     esc = 0
                     layout = [
                         [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
-                        [sg.Button('Y'), sg.Button('N'), sg.Stretch()]
+                        [sg.Button('Y', auto_size_button=False), sg.Button('N', auto_size_button=False), sg.Stretch()]
                     ]
 
                     quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
@@ -234,7 +233,7 @@ class Main:
                     layout = [
                         [sg.T("")],
                         [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
-                        [sg.Button("Submit"), sg.Button("Quit")]
+                        [sg.Button("Submit", auto_size_button=False), sg.Button("Quit", auto_size_button=False)]
                     ]
 
                     open_window = sg.Window('Open file', layout, no_titlebar=False)
@@ -317,8 +316,7 @@ class Search_class(Main):  #Main class inheritance
 
         if Main.namefile == "":                                                                    #insert namefile if not defined
             layout = [
-                [sg.Text("Write here the name of the file")],
-                [sg.Input(size=(50,20), key='-INPU-'), sg.Button('Submit')]
+                [sg.Input(size=(50,1), default_text="Write here the name of the file", key='-INPU-'), sg.FileBrowse(auto_size_button=False, change_submits=False), sg.Button('Submit', auto_size_button=True)]
             ]
 
             namefile_window = sg.Window('Name of the file', layout, no_titlebar=False)
@@ -327,7 +325,7 @@ class Search_class(Main):  #Main class inheritance
                 event_namefile, namefile_input = namefile_window.read()
 
                 if event_namefile == 'Submit':
-                    Main.namefile = Main.path + namefile_input.get('-INPU-')      #extract namefile from dict
+                    Main.namefile = namefile_input.get('-INPU-')      #extract namefile from dict
                     f = open(Main.namefile, "a")
                     f.close()
                     break
@@ -340,7 +338,7 @@ class Search_class(Main):  #Main class inheritance
         for line in f:
             Search_class.row += 1
             for Search_class.word in line.split(" "):
-                if Search_class.tag == Search_class.word:
+                if Search_class.tag == Search_class.word or Search_class.tag + "\n" == Search_class.word:
                     Search_class.row = str(Search_class.row)
                     Search_class.file_riga = "File:" + Main.namefile + " Row:" + Search_class.row
         f.close()
@@ -359,7 +357,7 @@ class Search_class(Main):  #Main class inheritance
         controller_2 = True
 
         for file_in_path in os.listdir(Main.path):              #insert in a dict all file in current path
-           if os.path.isfile(os.path.join(Main.path, file_in_path)):
+           if os.path.isfile(os.path.join(Main.path, file_in_path) and "." not in file_in_path):
                all_file.append(file_in_path)
 
         while controller_1 == True:
@@ -386,10 +384,9 @@ class Search_class(Main):  #Main class inheritance
         main func search
         """
         layout = [
-            [sg.Text("Search the tag here")],
-            [sg.Input(size=(70,30), key='-INPUT-')],
-            [sg.Output(size=(70,1), key='-OUTPUT_SEARCH-')],
-            [sg.Button('Search in file'), sg.Button('Search in all the file'), sg.Button('Quit')]
+            [sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-')],
+            [sg.Output(size=(70,2), key='-OUTPUT_SEARCH-')],
+            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all the file', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
         ]
 
         window_search = sg.Window('Search page', layout, no_titlebar=False)
