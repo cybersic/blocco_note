@@ -21,7 +21,7 @@ class Main:
         """
 
         layout = [
-            [sg.Input(size=(30, 1), default_text="Write here the name of the file", key="-INPUT-" ,change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False), sg.Button('Submit', auto_size_button=False), sg.Stretch()]
+            [sg.Input(size=(30, 1), key="-INPUT-"), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=True), sg.Button('Submit', auto_size_button=False, change_submits=False), sg.Stretch()]
         ]
 
         path_window = sg.Window(                                #starting path window
@@ -144,7 +144,7 @@ class Main:
                     for file in os.listdir(Main.path):
                         if "." not in file:                                             #check status file, if is hide file not add
                             files_in_path = files_in_path + file + "\n"
-                            
+
 
                         main_window['-OUTPUT-'].update(files_in_path)                                                   #window files in current path
                         main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
@@ -232,7 +232,7 @@ class Main:
                 if event_main == 'Open' or event_main == 'i:31':
                     layout = [
                         [sg.T("")],
-                        [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
+                        [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=False), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
                         [sg.Button("Submit", auto_size_button=False), sg.Button("Quit", auto_size_button=False)]
                     ]
 
@@ -246,11 +246,25 @@ class Main:
 
                         if event == "Submit":
                             to_open = to_open.get('-INP-')
-                            Main.namefile = to_open
-                            a = open(to_open, "r")
-                            main_window['-INPUT-'].update(a.read())                              #go to open page
-                            a.close()
-                            break
+
+                            """
+                            if to_open == '':                               #if file doesn't exist create it
+                                to_open = Main.path + "nuovo.txt"
+                                tmp_open = open(to_open, "a")
+                                tmp_open.close()
+                            """
+
+                            try:
+                                Main.namefile = to_open
+                                a = open(to_open, "r")
+                                main_window['-INPUT-'].update(a.read())                              #go to open page
+                                a.close()
+                                break
+                            except:
+                                to_open = Main.path + "nuovo.txt"
+                                tmp_open = open(to_open, "a")
+                                tmp_open.close()
+
                     open_window.close()
 
                 if event_main == 'Search' or event_main == 'f:41':
@@ -316,7 +330,7 @@ class Search_class(Main):  #Main class inheritance
 
         if Main.namefile == "":                                                                    #insert namefile if not defined
             layout = [
-                [sg.Input(size=(50,1), default_text="Write here the name of the file", key='-INPU-'), sg.FileBrowse(auto_size_button=False, change_submits=False), sg.Button('Submit', auto_size_button=True)]
+                [sg.Input(size=(50,1), default_text="Write here the name of the file", key='-INPU-'), sg.FileBrowse(auto_size_button=False, change_submits=True), sg.Button('Submit', auto_size_button=True)]
             ]
 
             namefile_window = sg.Window('Name of the file', layout, no_titlebar=False)
@@ -361,20 +375,26 @@ class Search_class(Main):  #Main class inheritance
                all_file.append(file_in_path)
 
         while controller_1 == True:
-            actual_file = Main.path + all_file[key]               #change of actual_file
+            try:
+                actual_file = Main.path + all_file[key]               #change of actual_file
+                d = open(actual_file, "r")
 
-            d = open(actual_file, "r")
+                Search_class.row = 0
+                for line in d:
+                    Search_class.row += 1
+                    for word in line.split(" "):
+                        if Search_class.tag == word:
+                            Search_class.file_riga = "File:" + actual_file + " Row:" + Search_class.row
+                            controller_1 = False
+                d.close()
 
-            Search_class.row = 0
-            for line in d:
-                Search_class.row += 1
-                for word in line.split(" "):
-                    if Search_class.tag == word:
-                        Search_class.file_riga = "File:" + actual_file + " Row:" + Search_class.row
-                        controller_1 = False
-            d.close()
+                key += 1                                            #update the key to access list of file
 
-            key += 1                                            #update the key to access list of file
+            except IndexError:                                                                                            #if too many file not do the task (beacuse crash)
+                Search_class.file_riga = "Too many file in dir"
+                controller_1 = False
+
+
 
         return Search_class.file_riga
 
@@ -386,7 +406,7 @@ class Search_class(Main):  #Main class inheritance
         layout = [
             [sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-')],
             [sg.Output(size=(70,2), key='-OUTPUT_SEARCH-')],
-            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all the file', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
+            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search all files in dir', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
         ]
 
         window_search = sg.Window('Search page', layout, no_titlebar=False)
