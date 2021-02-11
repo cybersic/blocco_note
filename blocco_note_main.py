@@ -7,7 +7,6 @@ class Main:
     """
     Main class
     """
-    #main_window 
     quitter = 0
     mytext = ""
     namefile = ""
@@ -21,7 +20,7 @@ class Main:
         """
 
         layout = [
-            [sg.Input(size=(30, 1), key="-INPUT-"), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=True), sg.Button('Submit', auto_size_button=False, change_submits=False), sg.Stretch()]
+            [sg.Input(size=(30, 1), key="-INPUT-", change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=False), sg.Button('Submit', auto_size_button=False, change_submits=False), sg.Stretch()]
         ]
 
         path_window = sg.Window(                                #starting path window
@@ -34,7 +33,7 @@ class Main:
         while True:
             event, tmp_path = path_window.read()
 
-            if event == sg.WIN_CLOSED:                                      #set home if closed not set
+            if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
                 if platform.system() == "Windows":                 #for windows
                     Main.path = os.path.expanduser("~") + "\\"              
                 else:                                              #for other
@@ -109,7 +108,7 @@ class Main:
             ]
 
             frame2 = [
-                [sg.Stretch(), sg.Multiline(size=(90,20) , key='-INPUT-', autoscroll = True, enable_events=True, ), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+                [sg.Stretch(), sg.Multiline(size=(90,20) , key='-INPUT-', autoscroll = True, enable_events=True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
             ]
 
             frame3 = [
@@ -122,7 +121,8 @@ class Main:
                     [sg.Frame('', frame3)]
             ]
 
-            main_window = sg.Window('Homepage',                                      #starting main window
+            main_window = sg.Window(
+                                        'Homepage',                                      #starting main window
                                         layout,
                                         font=('Arial', 12),
                                         return_keyboard_events = True,
@@ -141,13 +141,17 @@ class Main:
 
                 if (counter > 0 and counter % 3 == 0) or counter == 1:      #start only first time or on 3 multiple and > 0
                     files_in_path = ""
-                    for file in os.listdir(Main.path):
-                        if "." not in file:                                             #check status file, if is hide file not add
-                            files_in_path = files_in_path + file + "\n"
 
+                    try:
+                       for file in os.listdir(Main.path):
+                            if "." not in file[0]:                                             #check status file, if is hide file not add
+                                files_in_path = files_in_path + file + "\n"
+                    except:
+                        main_window['-OUTPUT-'].update("The dir doesn't exist")     
+                        Main.path_func(Main.path)
 
-                        main_window['-OUTPUT-'].update(files_in_path)                                                   #window files in current path
-                        main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
+                    main_window['-OUTPUT-'].update(files_in_path)                                                   #window files in current path
+                    main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
 
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
