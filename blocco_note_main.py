@@ -108,7 +108,7 @@ class Main:
             ]
 
             frame2 = [
-                [sg.Stretch(), sg.Multiline(size=(90,20) , key='-INPUT-', autoscroll = True, enable_events=True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+                [sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
             ]
 
             frame3 = [
