@@ -82,9 +82,13 @@ class Main:
                     namefile_window['-OUTP-'].update("The file is already exist, if you want to open use the button Open")
                     continue
                 else:
-                    f = open(Main.namefile, "a")
-                    f.close()
-                    break
+                    try:
+                        f = open(Main.namefile, "a")
+                        f.close()
+                        break
+                    except PermissionError:
+                        namefile_window['-OUTP-'].update("You cant create the file in this dir")
+
 
         namefile_window.close()
 
@@ -155,6 +159,7 @@ class Main:
 
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
+
 
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
@@ -303,17 +308,26 @@ class Write_read(Main):  #Main class inheritance
         """
         read from file
         """
-        f = open(namefile, "r")
+        try:
+            with open(namefile, "r") as f:
+                f.read()
+        except PermissionError:
+            print("You can't read in this dir")
 
-        return f.read()
+        return f
 
 
     def write(mytext, namefile):
         """
         write in file (append)
         """
-        f = open(namefile, "w")
-        return f.write(mytext)
+        try:
+            with open(namefile, "w") as f:
+                f.write(mytext)
+        except PermissionError:
+            print("You can't write in this dir")
+
+        return f
 
 
 class Search_class(Main):  #Main class inheritance
@@ -342,8 +356,18 @@ class Search_class(Main):  #Main class inheritance
             while True:
                 event_namefile, namefile_input = namefile_window.read()
 
+                if event_namefile == sg.WIN_CLOSED:
+                    Main.namefile = "nuovo.txt"
+                    f = open(Main.namefile, "a")
+                    f.close()
+                    break
+
                 if event_namefile == 'Submit':
                     Main.namefile = namefile_input.get('-INPU-')      #extract namefile from dict
+
+                    if Main.namefile == "":                         #if doesn't exist create nuovo.txt
+                        Main.namefile = "nuovo.txt"
+
                     f = open(Main.namefile, "a")
                     f.close()
                     break
@@ -410,7 +434,7 @@ class Search_class(Main):  #Main class inheritance
         layout = [
             [sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-')],
             [sg.Output(size=(70,2), key='-OUTPUT_SEARCH-')],
-            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search all files in dir', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
+            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all files in dir', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
         ]
 
         window_search = sg.Window('Search page', layout, no_titlebar=False)
