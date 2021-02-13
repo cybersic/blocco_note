@@ -108,7 +108,8 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save', auto_size_button=False), sg.Button('Save as', auto_size_button=False), sg.Button('Set the Path', auto_size_button=True), sg.Button('Open', auto_size_button=False), sg.Button("Open terminal", auto_size_button=True), sg.MultilineOutput(size=(60,4), key='-OUT-'), sg.Stretch(size=(70,4))],
+                [sg.Button('Save', auto_size_button=True, tooltip="press Ctrl"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
+                [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
             ]
 
             frame2 = [
@@ -116,11 +117,11 @@ class Main:
             ]
 
             frame3 = [
-                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False)]
+                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f1"), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")]
             ]
 
             layout = [
-                    [sg.Frame('', frame1)],
+                    [sg.Frame('', frame1, size=(90,3))],
                     [sg.Frame('', frame2)],
                     [sg.Frame('', frame3)]
             ]
@@ -165,14 +166,15 @@ class Main:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
                     controller_dw = False
 
-                #print(event_main)                   #test
+                print(event_main)                   #test
 
                 #quit section
                 if event_main == sg.WIN_CLOSED:
                     Main.quitter = 1
                     break
 
-                if event_main == 'Quit' or event_main == 'q:24':              #quit
+                #quit_shortcut
+                if event_main == 'Quit' or event_main == "special 16777216":                              #quit
                     esc = 0
                     layout = [
                         [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
@@ -222,10 +224,10 @@ class Main:
                         Main.dw = 0
                     break
 
-                if event_main == 'Set the Path' or event_main == 'k:45':
+                if event_main == 'Set the Path' or event_main == "special 16781571":
                     Main.path_func(Main.path)                                    #starting path window
 
-                if event_main == 'Save' or event_main == 's:39':
+                if event_main == 'Save' or event_main == 'special 16777249':
                     if Main.namefile == "":
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
@@ -242,7 +244,7 @@ class Main:
                     Main.quitter = 1
                     break
 
-                if event_main == 'Open' or event_main == 'i:31':
+                if event_main == 'Open' or event_main == 'special 16777251':
                     layout = [
                         [sg.T("")],
                         [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=False), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
@@ -257,7 +259,7 @@ class Main:
                         if event == sg.WIN_CLOSED:
                             break
 
-                        if event == 'Quit' or event == 'q:24':
+                        if event == 'Quit':
                             break
 
                         if event == "Submit":
@@ -276,10 +278,10 @@ class Main:
 
                     open_window.close()
 
-                if event_main == 'Search' or event_main == 'f:41':
+                if event_main == 'Search' or event_main == 'special 16777264':
                     Search_class.main_search_func()                           #go to search page
 
-                if event_main == 'Open terminal' or event_main == 't:45':                                #open terminal
+                if event_main == 'Open terminal' or event_main == 'special 16777275':                                #open terminal
                     if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
                         Main.path_func(Main.path)
 
