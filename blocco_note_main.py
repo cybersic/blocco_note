@@ -179,9 +179,13 @@ class Main:
                     while True:
                         event_quit, null = quit_window.read()
 
+                        if event_quit == sg.WIN_CLOSED:                 #not close if you press x in quit_window
+                            esc = 0
+
                         if event_quit == 'N':
                             esc = 0
-                        else:
+
+                        if event_quit == 'Y':
                             esc = 1
                             Main.quitter = 1
 
@@ -245,18 +249,14 @@ class Main:
                     while True:                                         #browsing the file
                         event, to_open = open_window.read()
                         
-                        if event == 'Quit' or event_main == 'q:24' or event_main == sg.WIN_CLOSED:
+                        if event == sg.WIN_CLOSED:
+                            break
+
+                        if event == 'Quit' or event == 'q:24':
                             break
 
                         if event == "Submit":
                             to_open = to_open.get('-INP-')
-
-                            """
-                            if to_open == '':                               #if file doesn't exist create it
-                                to_open = Main.path + "nuovo.txt"
-                                tmp_open = open(to_open, "a")
-                                tmp_open.close()
-                            """
 
                             try:
                                 Main.namefile = to_open
@@ -264,7 +264,7 @@ class Main:
                                 main_window['-INPUT-'].update(a.read())                              #go to open page
                                 a.close()
                                 break
-                            except:
+                            except:                                                 #if file doesn't exist create it
                                 to_open = Main.path + "nuovo.txt"
                                 tmp_open = open(to_open, "a")
                                 tmp_open.close()
