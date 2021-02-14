@@ -381,10 +381,10 @@ class Search_class(Main):  #Main class inheritance
         Search_class.row = 0
         for line in f:
             Search_class.row += 1
-            for Search_class.word in line.split(" "):
-                if Search_class.tag == Search_class.word or Search_class.tag + "\n" == Search_class.word:
-                    Search_class.row = str(Search_class.row)
-                    Search_class.file_riga = "File:" + Main.namefile + " Row:" + Search_class.row
+            for Search_class.word in line.split(" "):        #line -> fragmented in word
+                Search_class.word.replace('\n', '')                       #remove \n from word
+                if Search_class.tag == Search_class.word:
+                    Search_class.file_riga = "File:" + Main.namefile + " Row:" + str(Search_class.row)
         f.close()
 
         return Search_class.file_riga
@@ -401,7 +401,7 @@ class Search_class(Main):  #Main class inheritance
         controller_2 = True
 
         for file_in_path in os.listdir(Main.path):              #insert in a dict all file in current path
-           if os.path.isfile(os.path.join(Main.path, file_in_path) and "." not in file_in_path):
+           if os.path.isfile(os.path.join(Main.path, file_in_path)) and "." not in file_in_path:
                all_file.append(file_in_path)
 
         while controller_1 == True:
@@ -412,16 +412,17 @@ class Search_class(Main):  #Main class inheritance
                 Search_class.row = 0
                 for line in d:
                     Search_class.row += 1
-                    for word in line.split(" "):
-                        if Search_class.tag == word:
-                            Search_class.file_riga = "File:" + actual_file + " Row:" + Search_class.row
+                    for Search_class.word in line.split(" "):        #line -> fragmented in word
+                        Search_class.word.replace('\n', '')          #remove \n from word
+                        if Search_class.tag == Search_class.word:
+                            Search_class.file_riga = "File:" + actual_file + " Row:" + str(Search_class.row)
                             controller_1 = False
                 d.close()
 
                 key += 1                                            #update the key to access list of file
 
-            except IndexError:                                                                                            #if too many file not do the task (beacuse crash)
-                Search_class.file_riga = "Too many file in dir"
+            except:                                                                                            #if too many file not do the task (beacuse crash)
+                Search_class.file_riga = "Too many file in dir or This file can't be shown"
                 controller_1 = False
 
 
@@ -450,7 +451,7 @@ class Search_class(Main):  #Main class inheritance
                 Search_class.tag = tag_input.get('-INPUT-')               #take the searched string from input
                 Search_class.search_local_file(Search_class.file_riga)                            #search in local file
 
-            if event == 'Search in all the file':
+            if event == 'Search in all files in dir':
                 Search_class.search_all_file(Search_class.file_riga)
 
             if event == 'Quit' or event == sg.WIN_CLOSED:
