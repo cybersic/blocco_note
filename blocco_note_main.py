@@ -1,6 +1,7 @@
 import PySimpleGUIQt as sg
 import platform
 import os
+from time import sleep
 
 
 class Main:
@@ -161,6 +162,8 @@ class Main:
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
+                if counter == 10:
+                    main_window['-INPUT-'].update("") #erase welcome file (only first time)
 
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
@@ -173,8 +176,7 @@ class Main:
                     Main.quitter = 1
                     break
 
-                #quit_shortcut
-                if event_main == 'Quit' or event_main == "special 16777216":                              #quit
+                if event_main == 'Quit' or event_main == "special 16777216":  #shortcut esc                            #quit
                     esc = 0
                     layout = [
                         [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
@@ -207,9 +209,18 @@ class Main:
                             continue
 
 
-                if counter < 1:
+                if counter < 1:                                                                        #only first time action
+                    main_window['-INPUT-'].update(                                   #update with welcome file
+                                                    "Welcome file\n\n"
+                                                    "  Shortcut:\n"
+                                                    "           - ctrl = save\n"
+                                                    "           - alt = open file\n"
+                                                    "           - alt gr = set the path\n"
+                                                    "           - f1 = search\n"
+                                                    "           - f12 = open external terminal\n"
+                                                )
                     if Main.path == "":
-                        Main.path_func(Main.path)                                    #starting path window (only first time)
+                        Main.path_func(Main.path)               #starting path window (only first time)
 
 
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
@@ -224,10 +235,10 @@ class Main:
                         Main.dw = 0
                     break
 
-                if event_main == 'Set the Path' or event_main == "special 16781571":
+                if event_main == 'Set the Path' or event_main == "special 16781571": #shortcut alt gr
                     Main.path_func(Main.path)                                    #starting path window
 
-                if event_main == 'Save' or event_main == 'special 16777249':
+                if event_main == 'Save' or event_main == 'special 16777249':        #shortcut ctrl
                     if Main.namefile == "":
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
@@ -244,23 +255,27 @@ class Main:
                     Main.quitter = 1
                     break
 
-                if event_main == 'Open' or event_main == 'special 16777251':
+                if event_main == 'Open' or event_main == 'special 16777251':  #shortcut alt
                     layout = [
                         [sg.T("")],
-                        [sg.Text("Choose a file: "), sg.Input(key="-INP-", change_submits=False), sg.FileBrowse(initial_folder=Main.path, key='-INP2-')],
-                        [sg.Button("Submit", auto_size_button=False), sg.Button("Quit", auto_size_button=False)]
+                        [sg.Text("Choose a file (only with button): "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-', change_submits=True)],
+                        [sg.Button("Submit", auto_size_button=False, visible=False), sg.Button("Quit", auto_size_button=False)]
                     ]
 
                     open_window = sg.Window('Open file', layout, no_titlebar=False)
 
+
                     while True:                                         #browsing the file
                         event, to_open = open_window.read()
-                        
+
                         if event == sg.WIN_CLOSED:
                             break
 
                         if event == 'Quit':
                             break
+
+                        if to_open != "":
+                            open_window["Submit"].update(visible=True)                  #make submit button visible only if FileBrowse is set
 
                         if event == "Submit":
                             to_open = to_open.get('-INP-')
@@ -268,20 +283,20 @@ class Main:
                             try:
                                 Main.namefile = to_open
                                 a = open(to_open, "r")
-                                main_window['-INPUT-'].update(a.read())                              #go to open page
+                                main_window['-INPUT-'].update(a.read())                              #update main_window with the file open with a
                                 a.close()
                                 break
-                            except:                                                 #if file doesn't exist create it
+                            except FileNotFoundError:                                                 #if file doesn't exist create it
                                 to_open = Main.path + "nuovo.txt"
                                 tmp_open = open(to_open, "a")
                                 tmp_open.close()
 
                     open_window.close()
 
-                if event_main == 'Search' or event_main == 'special 16777264':
+                if event_main == 'Search' or event_main == 'special 16777264':      #shortcut f1
                     Search_class.main_search_func()                           #go to search page
 
-                if event_main == 'Open terminal' or event_main == 'special 16777275':                                #open terminal
+                if event_main == 'Open terminal' or event_main == 'special 16777275': #shortcut f12                                #open terminal
                     if Main.path == "":                      #if Main.path doesn't exist create it for open the terminal
                         Main.path_func(Main.path)
 
