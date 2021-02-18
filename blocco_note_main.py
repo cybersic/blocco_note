@@ -8,7 +8,7 @@ class Main:
     """
     Main class
     """
-    start = 0          #action only open first time
+    start = True          #action only open first time
     quitter = 0
     mytext = ""
     namefile = ""
@@ -208,7 +208,8 @@ class Main:
                             continue
 
 
-                if Main.start == 0:                                                                        #only first time action
+                if Main.start == True:                                                                        #only first time action
+                    Main.path_func(Main.path)
                     main_window['-INPUT-'].update(                                   #update welcome file
                                                     "Welcome file\n\n"
                                                     " Shortcut:\n"
@@ -218,7 +219,7 @@ class Main:
                                                     "  - f2 = search\n"
                                                     "  - f12 = open external terminal\n"
                                                 )
-                    Main.start += 1
+                    Main.start = False                  #not access to main start after first access
 
 
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
