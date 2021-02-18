@@ -8,6 +8,7 @@ class Main:
     """
     Main class
     """
+    start = 0          #action only open first time
     quitter = 0
     mytext = ""
     namefile = ""
@@ -34,14 +35,11 @@ class Main:
         while True:
             event, tmp_path = path_window.read()
 
-            if event == sg.WIN_CLOSED and Main.path == "":                                      #set path at home if closed not set
+            if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
                 if platform.system() == "Windows":                 #for windows
                     Main.path = os.path.expanduser("~") + "\\"              
                 else:                                              #for other
                     Main.path = os.path.expanduser("~") + "/"
-                break
-
-            if event == sg.WIN_CLOSED and Main.path != "":
                 break
 
             if event == 'Submit':
@@ -139,6 +137,7 @@ class Main:
                                         no_titlebar = False
                                     )
 
+                                                                                #DA SISTEMARE SHORTCUT
                                                                                 #DA SISTEMARE RESIZABLE
 
             counter = 0         #for start path window only first time
@@ -209,6 +208,19 @@ class Main:
                             continue
 
 
+                if Main.start == 0:                                                                        #only first time action
+                    main_window['-INPUT-'].update(                                   #update welcome file
+                                                    "Welcome file\n\n"
+                                                    " Shortcut:\n"
+                                                    "  - f1 = save\n"
+                                                    "  - alt = open file\n"
+                                                    "  - alt gr = set the path\n"
+                                                    "  - f2 = search\n"
+                                                    "  - f12 = open external terminal\n"
+                                                )
+                    Main.start += 1
+
+
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
 
@@ -243,7 +255,6 @@ class Main:
 
                 if event_main == 'Open' or event_main == 'special 16777251':  #shortcut alt
                     layout = [
-                        [sg.T("")],
                         [sg.Text("Choose a file (only with button): "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-', change_submits=True)],
                         [sg.Button("Submit", auto_size_button=False, visible=False), sg.Button("Quit", auto_size_button=False)]
                     ]
