@@ -34,11 +34,14 @@ class Main:
         while True:
             event, tmp_path = path_window.read()
 
-            if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
+            if event == sg.WIN_CLOSED and Main.path == "":                                      #set path at home if closed not set
                 if platform.system() == "Windows":                 #for windows
                     Main.path = os.path.expanduser("~") + "\\"              
                 else:                                              #for other
                     Main.path = os.path.expanduser("~") + "/"
+                break
+
+            if event == sg.WIN_CLOSED and Main.path != "":
                 break
 
             if event == 'Submit':
@@ -109,7 +112,7 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save', auto_size_button=True, tooltip="press Ctrl"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
+                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
                 [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
             ]
 
@@ -118,7 +121,7 @@ class Main:
             ]
 
             frame3 = [
-                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f1"), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")]
+                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")]
             ]
 
             layout = [
@@ -136,7 +139,6 @@ class Main:
                                         no_titlebar = False
                                     )
 
-                                                                                #DA SISTEMARE SHORTCUT
                                                                                 #DA SISTEMARE RESIZABLE
 
             counter = 0         #for start path window only first time
@@ -162,8 +164,6 @@ class Main:
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
-                if counter == 10:
-                    main_window['-INPUT-'].update("") #erase welcome file (only first time)
 
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
@@ -188,7 +188,7 @@ class Main:
                     while True:
                         event_quit, null = quit_window.read()
 
-                        if event_quit == sg.WIN_CLOSED:                 #not close if you press x in quit_window
+                        if event_quit == sg.WIN_CLOSED:                 #not close main window if you press x in quit_window
                             esc = 0
 
                         if event_quit == 'N':
@@ -209,20 +209,6 @@ class Main:
                             continue
 
 
-                if counter < 1:                                                                        #only first time action
-                    main_window['-INPUT-'].update(                                   #update with welcome file
-                                                    "Welcome file\n\n"
-                                                    "  Shortcut:\n"
-                                                    "           - ctrl = save\n"
-                                                    "           - alt = open file\n"
-                                                    "           - alt gr = set the path\n"
-                                                    "           - f1 = search\n"
-                                                    "           - f12 = open external terminal\n"
-                                                )
-                    if Main.path == "":
-                        Main.path_func(Main.path)               #starting path window (only first time)
-
-
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
 
@@ -238,7 +224,7 @@ class Main:
                 if event_main == 'Set the Path' or event_main == "special 16781571": #shortcut alt gr
                     Main.path_func(Main.path)                                    #starting path window
 
-                if event_main == 'Save' or event_main == 'special 16777249':        #shortcut ctrl
+                if event_main == 'Save' or event_main == 'special 16777264':        #shortcut f1
                     if Main.namefile == "":
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
@@ -293,7 +279,7 @@ class Main:
 
                     open_window.close()
 
-                if event_main == 'Search' or event_main == 'special 16777264':      #shortcut f1
+                if event_main == 'Search' or event_main == 'special 16777265':      #shortcut f1
                     Search_class.main_search_func()                           #go to search page
 
                 if event_main == 'Open terminal' or event_main == 'special 16777275': #shortcut f12                                #open terminal
