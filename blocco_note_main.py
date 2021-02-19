@@ -47,6 +47,13 @@ class Main:
                     Main.path = tmp_path.get('-INPUT-') + "\\"
                 else:
                     Main.path = tmp_path.get('-INPUT-') + "/"
+
+                if Main.path == "/" or Main.path == "\\":                   #if submit without path set path at home
+                    if platform.system() == "Windows":                 #for windows
+                        Main.path = os.path.expanduser("~") + "\\"              
+                    else:                                              #for other
+                        Main.path = os.path.expanduser("~") + "/"
+
                 break
 
         path_window.close()
@@ -219,7 +226,7 @@ class Main:
                                                     "  - f2 = search\n"
                                                     "  - f12 = open external terminal\n"
                                                 )
-                    Main.start = False                  #not access to main start after first access
+                    Main.start = False                  #not access to Main.start after first access
 
 
                 Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
