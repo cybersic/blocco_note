@@ -1,7 +1,6 @@
 import PySimpleGUIQt as sg
 import platform
 import os
-from time import sleep
 
 
 class Main:
@@ -144,7 +143,6 @@ class Main:
                                         no_titlebar = False
                                     )
 
-                                                                                #DA SISTEMARE SHORTCUT
                                                                                 #DA SISTEMARE RESIZABLE
 
             counter = 0         #for start path window only first time
