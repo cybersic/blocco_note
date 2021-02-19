@@ -116,7 +116,7 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
+                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
                 [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
             ]
 
@@ -158,7 +158,7 @@ class Main:
                     try:
                        for file in os.listdir(Main.path):
                             if "." not in file[0]:                                             #check status file, if is hide file not add
-                                files_in_path = files_in_path + file + "\n"
+                                files_in_path = files_in_path + "- " + file + "\n"
                     except:
                         main_window['-OUTPUT-'].update("The dir doesn't exist")     
                         Main.path_func(Main.path)
