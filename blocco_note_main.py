@@ -116,7 +116,7 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press alt gr"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
+                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
                 [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
             ]
 
@@ -218,12 +218,15 @@ class Main:
                     Main.path_func(Main.path)
                     main_window['-INPUT-'].update(                                   #update welcome file
                                                     "Welcome file\n\n"
+                                                    " This is a text editor for all common use\n"
+                                                    " like text writing or programming.\n"
+                                                    " When you have read the welcome file you can cancel this.\n\n"
                                                     " Shortcut:\n"
-                                                    "  - f1 = save\n"
-                                                    "  - alt = open file\n"
-                                                    "  - alt gr = set the path\n"
-                                                    "  - f2 = search\n"
-                                                    "  - f12 = open external terminal\n"
+                                                    "    - f1 = save\n"
+                                                    "    - f2 = search\n"
+                                                    "    - alt = open file\n"
+                                                    "    - f11 = set the path\n"
+                                                    "    - f12 = open external terminal in current dir\n"
                                                 )
                     Main.start = False                  #not access to Main.start after first access
 
@@ -240,7 +243,7 @@ class Main:
                         Main.dw = 0
                     break
 
-                if event_main == 'Set the Path' or event_main == "special 16781571": #shortcut alt gr
+                if event_main == 'Set the Path' or event_main == "special 16777274": #shortcut f11
                     Main.path_func(Main.path)                                    #starting path window
 
                 if event_main == 'Save' or event_main == 'special 16777264':        #shortcut f1
