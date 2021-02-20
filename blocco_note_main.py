@@ -218,9 +218,8 @@ class Main:
                     Main.path_func(Main.path)
                     main_window['-INPUT-'].update(                                   #update welcome file
                                                     "Welcome file\n\n"
-                                                    " This is a text editor for all common use\n"
-                                                    " like text writing or programming.\n"
-                                                    " When you have read the welcome file you can cancel this.\n\n"
+                                                    " This is a text editor for all common use like text writing or programming.\n"
+                                                    " When you have read the welcome file you can cancel this and write.\n\n"
                                                     " Shortcut:\n"
                                                     "    - f1 = save\n"
                                                     "    - f2 = search\n"
