@@ -294,6 +294,7 @@ class Main:
                                 to_open = Main.path + "nuovo.txt"
                                 tmp_open = open(to_open, "a")
                                 tmp_open.close()
+                                #no exit from the cycle if no file input
 
                     open_window.close()
 
@@ -378,7 +379,7 @@ class Search_class(Main):  #Main class inheritance
                 event_namefile, namefile_input = namefile_window.read()
 
                 if event_namefile == sg.WIN_CLOSED:
-                    Main.namefile = "nuovo.txt"
+                    Main.namefile = Main.path + "nuovo.txt"
                     f = open(Main.namefile, "a")
                     f.close()
                     break
@@ -387,7 +388,7 @@ class Search_class(Main):  #Main class inheritance
                     Main.namefile = namefile_input.get('-INPU-')      #extract namefile from dict
 
                     if Main.namefile == "":                         #if doesn't exist create nuovo.txt
-                        Main.namefile = "nuovo.txt"
+                        Main.namefile = Main.path + "nuovo.txt"
 
                     f = open(Main.namefile, "a")
                     f.close()
