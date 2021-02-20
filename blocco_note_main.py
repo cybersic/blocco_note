@@ -455,9 +455,9 @@ class Search_class(Main):  #Main class inheritance
         main func search
         """
         layout = [
-            [sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-')],
-            [sg.Output(size=(70,2), key='-OUTPUT_SEARCH-')],
-            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all files in dir', auto_size_button=True), sg.Stretch(), sg.Button('Quit', auto_size_button=False), sg.Stretch()]
+            [sg.Stretch(), sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-'), sg.Stretch()],
+            [sg.Stretch(), sg.Output(size=(70,2), key='-OUTPUT_SEARCH-'), sg.Stretch()],\
+            [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all files in dir', auto_size_button=True), sg.Stretch(), sg.Stretch(), sg.Button('Quit', auto_size_button=False)]
         ]
 
         window_search = sg.Window('Search page', layout, no_titlebar=False)
