@@ -118,16 +118,6 @@ class Main:
             elif Main.dw == 1:
                 sg.theme('SystemDefault')
 
-            frame1 = [
-                [   #it's all in one line
-                    sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"),
-                    sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"),
-                    sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")
-                ],
-
-                [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
-            ]
-
             frame2 = [
                 [   #it's all in one line
                     sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True),
