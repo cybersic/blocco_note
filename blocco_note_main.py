@@ -21,13 +21,16 @@ class Main:
         """
 
         layout = [
-            [sg.Input(size=(30, 1), key="-INPUT-", change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=False), sg.Button('Submit', auto_size_button=False, change_submits=False), sg.Stretch()]
+            [ #it's all in one line
+                sg.Input(size=(30, 1), key="-INPUT-", change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=False),
+                sg.Button('Submit', auto_size_button=False, change_submits=False)
+            ]
         ]
 
         path_window = sg.Window(                                #starting path window
                                 'Path',
                                 layout,
-                                size=(230, 100),
+                                resizable=False,
                                 no_titlebar=False
                             )
 
@@ -72,7 +75,7 @@ class Main:
         namefile_window = sg.Window(                                #starting namefile window
                                     'Name of the file',
                                     layout,
-                                    size=(230, 100),
+                                    resizable=False,
                                     no_titlebar=False
                                 )
 
@@ -116,16 +119,27 @@ class Main:
                 sg.theme('SystemDefault')
 
             frame1 = [
-                [sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"), sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"), sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")],
+                [   #it's all in one line
+                    sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"),
+                    sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"),
+                    sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")
+                ],
+
                 [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()]
             ]
 
             frame2 = [
-                [sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True), sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()],
+                [   #it's all in one line
+                    sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True),
+                    sg.MultilineOutput(size=(20,20), key='-OUTPUT-'), sg.Stretch()
+                ],
             ]
 
             frame3 = [
-                [sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(), sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")]
+                [   #it's all in one line
+                    sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(),
+                    sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")
+                ]
             ]
 
             layout = [
@@ -188,7 +202,7 @@ class Main:
                         [sg.Button('Y', auto_size_button=False), sg.Button('N', auto_size_button=False), sg.Stretch()]
                     ]
 
-                    quit_window = sg.Window('Quitting page', layout, no_titlebar=False)            #quitting page (y/n)
+                    quit_window = sg.Window('Quitting page', layout, resizable=False, no_titlebar=False)            #quitting page (y/n)
 
                     while True:
                         event_quit, null = quit_window.read()
@@ -264,11 +278,15 @@ class Main:
 
                 if event_main == 'Open' or event_main == 'special 16777251':  #shortcut alt
                     layout = [
-                        [sg.Text("Choose a file (only with button): "), sg.Input(key="-INP-", change_submits=True), sg.FileBrowse(initial_folder=Main.path, key='-INP2-', change_submits=True)],
+                        [   #it's all in one line
+                            sg.Text("Choose a file (only with button): "), sg.Input(key="-INP-", change_submits=True),
+                            sg.FileBrowse(initial_folder=Main.path, key='-INP2-', change_submits=True)
+                        ],
+
                         [sg.Button("Submit", auto_size_button=False, visible=False), sg.Button("Quit", auto_size_button=False)]
                     ]
 
-                    open_window = sg.Window('Open file', layout, no_titlebar=False)
+                    open_window = sg.Window('Open file', layout, resizable=False, no_titlebar=False)
 
 
                     while True:                                         #browsing the file
@@ -375,7 +393,7 @@ class Search_class(Main):  #Main class inheritance
                 [sg.Input(size=(50,1), default_text="Write here the name of the file", key='-INPU-'), sg.FileBrowse(auto_size_button=False, change_submits=True), sg.Button('Submit', auto_size_button=True)]
             ]
 
-            namefile_window = sg.Window('Name of the file', layout, no_titlebar=False)
+            namefile_window = sg.Window('Name of the file', layout, resizable=False, no_titlebar=False)
 
             while True:
                 event_namefile, namefile_input = namefile_window.read()
@@ -443,7 +461,7 @@ class Search_class(Main):  #Main class inheritance
 
                 key += 1                                            #update the key to access list of file
 
-            except:                                                                                            #if too many file not do the task (beacuse crash)
+            except:                                                                             #if too many file not do the task (beacuse crash)
                 Search_class.file_riga = "Too many file in dir or This file can't be shown"
                 controller_1 = False
 
@@ -458,11 +476,11 @@ class Search_class(Main):  #Main class inheritance
         """
         layout = [
             [sg.Stretch(), sg.Input(size=(70,1), default_text="Search the tag here", key='-INPUT-'), sg.Stretch()],
-            [sg.Stretch(), sg.Output(size=(70,2), key='-OUTPUT_SEARCH-'), sg.Stretch()],\
+            [sg.Stretch(), sg.Output(size=(70,2), key='-OUTPUT_SEARCH-'), sg.Stretch()],
             [sg.Button('Search in file', auto_size_button=True), sg.Button('Search in all files in dir', auto_size_button=True), sg.Stretch(), sg.Stretch(), sg.Button('Quit', auto_size_button=False)]
         ]
 
-        window_search = sg.Window('Search page', layout, no_titlebar=False)
+        window_search = sg.Window('Search page', layout, resizable=False, no_titlebar=False)
 
         while True:
             event, tag_input = window_search.read()
