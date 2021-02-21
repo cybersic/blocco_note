@@ -183,13 +183,12 @@ class Main:
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
-                if event_main != sg.WIN_CLOSED:                 #extract only if the event is not win closed (because he pollute mytext)
-                    Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
-
-
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
                     controller_dw = False
+
+                if event_main != sg.WIN_CLOSED:                 #extract only if the event is not win closed (because he pollute mytext)
+                    Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
                 print(event_main)                   #test
 
