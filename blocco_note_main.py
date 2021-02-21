@@ -45,16 +45,22 @@ class Main:
                 break
 
             if event == 'Submit':
-                if platform.system() == "Windows":
-                    Main.path = tmp_path.get('-INPUT-') + "\\"
-                else:
-                    Main.path = tmp_path.get('-INPUT-') + "/"
-
-                if Main.path == "/" or Main.path == "\\":                   #if submit without path set path at home
+                if tmp_path.get('-INPUT-') == "/" or tmp_path.get('-INPUT-') == "\\":         #if submit without input or root input set path at home
                     if platform.system() == "Windows":                 #for windows
                         Main.path = os.path.expanduser("~") + "\\"              
                     else:                                              #for other
                         Main.path = os.path.expanduser("~") + "/"
+
+                    break
+
+                if platform.system() == "Windows":                 #normally set of path
+                    Main.path = tmp_path.get('-INPUT-') + "\\"
+                else:
+                    Main.path = tmp_path.get('-INPUT-') + "/"
+
+
+
+
 
                 break
 
