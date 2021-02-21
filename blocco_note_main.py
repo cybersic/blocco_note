@@ -58,10 +58,6 @@ class Main:
                 else:
                     Main.path = tmp_path.get('-INPUT-') + "/"
 
-
-
-
-
                 break
 
         path_window.close()
@@ -187,6 +183,9 @@ class Main:
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
+                if event_main != sg.WIN_CLOSED:                 #extract only if the event is not win closed (because he pollute mytext)
+                    Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
+
 
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
@@ -196,13 +195,21 @@ class Main:
 
                 #quit section
                 if event_main == sg.WIN_CLOSED:
+                    try:                                                #temporaney save
+                        tmp_file = Main.path + "tmp_file.save"
+                        with open(tmp_file, "a") as tmp_file:
+                            tmp_file.write("Backup save\n")
+                            tmp_file.write(Main.mytext)
+                    except PermissionError:
+                            pass
+
                     Main.quitter = 1
                     break
 
                 if event_main == 'Quit' or event_main == "special 16777216":  #shortcut esc                            #quit
                     esc = 0
                     layout = [
-                        [sg.Text("Are you sure? If you haven't saved your work you will lost all"), sg.Stretch()],
+                        [sg.Text("Are you sure? If you haven't saved your work you probably will lost all"), sg.Stretch()],
                         [sg.Button('Y', auto_size_button=False), sg.Button('N', auto_size_button=False), sg.Stretch()]
                     ]
 
@@ -226,9 +233,17 @@ class Main:
                     quit_window.close()
 
                     if esc == 1:
+                        try:                                                #temporaney save
+                            tmp_file = Main.path + "tmp_file.save"
+                            with open(tmp_file, "a") as tmp_file:
+                                tmp_file.write("Backup save\n")
+                                tmp_file.write(Main.mytext)
+                        except PermissionError:
+                                pass
+
                         break
-                    else:
-                        if esc == 0:
+
+                    elif esc == 0:
                             continue
 
 
@@ -246,9 +261,6 @@ class Main:
                                                     "    - f12 = open external terminal in current dir\n"
                                                 )
                     Main.start = False                  #not access to Main.start after first access
-
-
-                Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
 
 
                 #operation section
