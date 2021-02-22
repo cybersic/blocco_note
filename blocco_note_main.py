@@ -14,6 +14,7 @@ class Main:
     path = ""
     dw = 0                  #Dark or White mode bool selector (default dark)
     dw = bool(dw)           #cast dw to bool
+    saved = False           #saved or not
 
     def path_func(path):
         """
@@ -181,6 +182,8 @@ class Main:
                     main_window['-OUT-'].update("Path: " + Main.path + "\n" + "File: " + Main.namefile)             #window current path and current file
 
 
+                old_mytext = Main.mytext                                                #trasfer Main.mytext on temporaney older_mytext
+
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
 
                 if controller_dw == True:
@@ -189,18 +192,24 @@ class Main:
 
                 if event_main != sg.WIN_CLOSED:                 #extract only if the event is not win closed (because he pollute mytext)
                     Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
+                
+                if old_mytext != Main.mytext:                   #check if mytext is changed for save or not
+                    main_window['Save'].update(button_color=('black','red'))                        #color button  save
+                    Main.saved = False
+
 
                 print(event_main)                   #test
 
                 #quit section
                 if event_main == sg.WIN_CLOSED:
-                    try:                                                #temporaney save
-                        tmp_file = Main.path + "tmp_file.save"
-                        with open(tmp_file, "a") as tmp_file:
-                            tmp_file.write("Backup save\n")
-                            tmp_file.write(Main.mytext)
-                    except PermissionError:
-                            pass
+                    if Main.saved == False:                     #if the clients close and is not save try to create a temporaney save
+                        try:                                                #temporaney save
+                            tmp_file = Main.path + "tmp_file.save"
+                            with open(tmp_file, "a") as tmp_file:
+                                tmp_file.write("Backup save\n")
+                                tmp_file.write(Main.mytext)
+                        except PermissionError:
+                                pass
 
                     Main.quitter = 1
                     break
@@ -232,14 +241,6 @@ class Main:
                     quit_window.close()
 
                     if esc == 1:
-                        try:                                                #temporaney save
-                            tmp_file = Main.path + "tmp_file.save"
-                            with open(tmp_file, "a") as tmp_file:
-                                tmp_file.write("Backup save\n")
-                                tmp_file.write(Main.mytext)
-                        except PermissionError:
-                                pass
-
                         break
 
                     elif esc == 0:
@@ -278,6 +279,8 @@ class Main:
                     if Main.namefile == "":
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
+                    Main.saved = True                                           #put the saved situation on save
+                    main_window['Save'].update(button_color=('white','green'))  #put the button on saved color
 
                 if event_main == 'Save as':
                     Main.namefile_func(Main.namefile)
