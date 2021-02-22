@@ -38,29 +38,32 @@ class Main:
         while True:
             event, tmp_path = path_window.read()
 
-            if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
-                if platform.system() == "Windows":                 #for windows
-                    Main.path = os.path.expanduser("~") + "\\"              
-                else:                                              #for other
-                    Main.path = os.path.expanduser("~") + "/"
-                break
-
-            if event == 'Submit':
-                if tmp_path.get('-INPUT-') == "/" or tmp_path.get('-INPUT-') == "\\":         #if submit without input or root input set path at home
+            if tmp_path.get('-INPUT-') != "":           #if is not white set the path else send error mex
+                if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
                     if platform.system() == "Windows":                 #for windows
                         Main.path = os.path.expanduser("~") + "\\"              
                     else:                                              #for other
                         Main.path = os.path.expanduser("~") + "/"
-
                     break
 
-                else:
-                    if platform.system() == "Windows":                 #normally set of path
-                        Main.path = tmp_path.get('-INPUT-') + "\\"
+                if event == 'Submit':
+                    if tmp_path.get('-INPUT-') == "/" or tmp_path.get('-INPUT-') == "\\":         #if submit without input or root input set path at home
+                        if platform.system() == "Windows":                 #for windows
+                            Main.path = os.path.expanduser("~") + "\\"              
+                        else:                                              #for other
+                            Main.path = os.path.expanduser("~") + "/"
+
+                        break
+
                     else:
-                        Main.path = tmp_path.get('-INPUT-') + "/"
+                        if platform.system() == "Windows":                 #normally set of path
+                            Main.path = tmp_path.get('-INPUT-') + "\\"
+                        else:
+                            Main.path = tmp_path.get('-INPUT-') + "/"
 
-                    break
+                        break
+            else:
+                path_window['-INPUT-'].update("Not valid input, try again")
 
         path_window.close()
 
