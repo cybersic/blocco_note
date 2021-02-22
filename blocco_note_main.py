@@ -54,12 +54,13 @@ class Main:
 
                     break
 
-                if platform.system() == "Windows":                 #normally set of path
-                    Main.path = tmp_path.get('-INPUT-') + "\\"
                 else:
-                    Main.path = tmp_path.get('-INPUT-') + "/"
+                    if platform.system() == "Windows":                 #normally set of path
+                        Main.path = tmp_path.get('-INPUT-') + "\\"
+                    else:
+                        Main.path = tmp_path.get('-INPUT-') + "/"
 
-                break
+                    break
 
         path_window.close()
 
