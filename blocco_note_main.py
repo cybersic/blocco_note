@@ -280,7 +280,10 @@ class Main:
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
                     Main.saved = True                                           #put the saved situation on save
-                    main_window['Save'].update(button_color=('white','green'))  #put the button on saved color
+                    if sg.theme()=="Dark":
+                        main_window['Save'].update(button_color=('white','green'))  #put the button on saved color
+                    elif sg.theme()=="SystemDefault":
+                        main_window['Save'].update(button_color=('white','blue'))  #put the button on saved color
 
                 if event_main == 'Save as':
                     Main.namefile_func(Main.namefile)
