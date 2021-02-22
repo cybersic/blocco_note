@@ -326,9 +326,7 @@ class Main:
                                 a.close()
                                 break
                             except FileNotFoundError:                                                 #if file doesn't exist create it
-                                to_open = Main.path + "nuovo.txt"
-                                tmp_open = open(to_open, "a")
-                                tmp_open.close()
+                                pass
                                 #no exit from the cycle if no file input
 
                     open_window.close()
