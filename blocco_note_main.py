@@ -294,7 +294,7 @@ class Main:
                 if event_main == 'Open' or event_main == 'special 16777251':  #shortcut alt
                     layout = [
                         [   #it's all in one line
-                            sg.Text("Choose a file (only with button): "), sg.Input(key="-INP-", change_submits=True),
+                            sg.Input(key="-INP-", default_text="Choose a file (only with button): ", size=(25,1), change_submits=True),
                             sg.FileBrowse(initial_folder=Main.path, key='-INP2-', change_submits=True)
                         ],
 
@@ -326,7 +326,7 @@ class Main:
                                 a.close()
                                 break
                             except FileNotFoundError:                                                 #if file doesn't exist create it
-                                pass
+                                open_window["-INP-"].update("File not found")       #update file not found
                                 #no exit from the cycle if no file input
 
                     open_window.close()
