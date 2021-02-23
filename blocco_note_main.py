@@ -14,6 +14,7 @@ class Main:
     path = ""
     dw = 0                  #Dark or White mode bool selector (default dark)
     dw = bool(dw)           #cast dw to bool
+    autosave = False        #autosave, predefinite mode off
     saved = False           #saved or not
 
     def path_func(path):
@@ -134,7 +135,7 @@ class Main:
 
             frame3 = [
                 [   #it's all in one line
-                    sg.Button('Dark/White', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(),
+                    sg.Button('Dark/White', auto_size_button=True), sg.Button('AutoSave', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(),
                     sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")
                 ]
             ]
@@ -204,6 +205,7 @@ class Main:
 
                 print(event_main)                   #test
 
+
                 #quit section
                 if event_main == sg.WIN_CLOSED:
                     if Main.saved == False:                     #if the clients close and is not save try to create a temporaney save
@@ -256,7 +258,8 @@ class Main:
                     main_window['-INPUT-'].update(                                   #update welcome file
                                                     "Welcome file\n\n"
                                                     " This is a text editor for all common use like text writing or programming.\n"
-                                                    " When you have read the welcome file you can cancel this one and write.\n\n"
+                                                    " When you have read the welcome file you can cancel this one and write.\n"
+                                                    " The predefinite status of AutoSave functionality is off\n\n"
                                                     " Shortcut:\n"
                                                     "    - f1 = save\n"
                                                     "    - f2 = search\n"
@@ -268,6 +271,29 @@ class Main:
 
 
                 #operation section
+                if event_main == 'AutoSave':                      #change autosave on or of
+                    if Main.autosave == False:      #on
+                        Main.autosave = True
+                        if sg.theme()=="Dark":
+                            main_window['AutoSave'].update(button_color=('white','black'))  #put the button in on status color
+                        elif sg.theme()=="SystemDefault":
+                            main_window['AutoSave'].update(button_color=('white','black'))  #put the button in on status color
+
+                    elif Main.autosave == True:       #off
+                        Main.autosave = False
+                        if sg.theme()=="Dark":
+                            main_window['AutoSave'].update(button_color=('white','green'))  #put the button in on status color
+                        elif sg.theme()=="SystemDefault":
+                            main_window['AutoSave'].update(button_color=('white','blue'))  #put the button in on status color
+
+
+                if Main.autosave == True:
+                    if counter % 200 == 0:
+                        if Main.namefile == "":         #set namefile if is not set
+                            Main.namefile_func(Main.namefile)
+                        Write_read.write(Main.mytext, Main.namefile)             #write on file
+                        Main.saved = True                                           #put the saved situation on save
+
                 if event_main == 'Dark/White':                      #change to dark or white mode theme
                     controller_dw = True
                     if Main.dw == 0:
@@ -276,11 +302,13 @@ class Main:
                         Main.dw = 0
                     break
 
+
                 if event_main == 'Set the Path' or event_main == "special 16777274": #shortcut f11
                     Main.path_func(Main.path)                                    #starting path window
 
+
                 if event_main == 'Save' or event_main == 'special 16777264':        #shortcut f1
-                    if Main.namefile == "":
+                    if Main.namefile == "":         #set namefile if is not set
                         Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
                     Main.saved = True                                           #put the saved situation on save
@@ -289,9 +317,11 @@ class Main:
                     elif sg.theme()=="SystemDefault":
                         main_window['Save'].update(button_color=('white','blue'))  #put the button on saved color
 
+
                 if event_main == 'Save as':
                     Main.namefile_func(Main.namefile)
                     Write_read.write(Main.mytext, Main.namefile)             #write on file
+
 
                 if event_main == 'Save and Quit':
                     if Main.namefile == "":
