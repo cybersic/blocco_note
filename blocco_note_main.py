@@ -7,7 +7,7 @@ class Main:
     """
     Main class
     """
-    start = True          #action only open first time
+    start = True            #action only open first time
     quitter = 0
     mytext = ""
     namefile = ""
@@ -24,7 +24,7 @@ class Main:
 
         layout = [
             [ #it's all in one line
-                sg.Input(size=(30, 1), key="-INPUT-", change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=False),
+                sg.Input(size=(30, 1), key="-INPUT-", default_text="Insert the path with button", change_submits=False), sg.FolderBrowse(key="-IN2-", auto_size_button=False, change_submits=False),
                 sg.Button('Submit', auto_size_button=False, change_submits=False)
             ]
         ]
