@@ -282,9 +282,9 @@ class Main:
                     elif Main.autosave == True:       #off
                         Main.autosave = False
                         if sg.theme()=="Dark":
-                            main_window['AutoSave'].update(button_color=('white','green'))  #put the button in on status color
+                            main_window['AutoSave'].update(button_color=('white','#006400'))  #put the button in off status color
                         elif sg.theme()=="SystemDefault":
-                            main_window['AutoSave'].update(button_color=('white','blue'))  #put the button in on status color
+                            main_window['AutoSave'].update(button_color=('white','#191970'))  #put the button in off status color
 
 
                 if Main.autosave == True:
