@@ -203,9 +203,6 @@ class Main:
                     Main.saved = False
 
 
-                print(event_main)                   #test
-
-
                 #quit section
                 if event_main == sg.WIN_CLOSED:
                     if Main.saved == False:                     #if the clients close and is not save try to create a temporaney save
