@@ -15,6 +15,7 @@ class Main:
     dw = 0                  #Dark or White mode bool selector (default dark)
     dw = bool(dw)           #cast dw to bool
     autosave = False        #autosave, predefinite mode off
+    math_bool = False       #math selector, predefinite mode off
     saved = False           #saved or not
 
     def path_func(path):
@@ -126,8 +127,16 @@ class Main:
             elif Main.dw == 1:
                 sg.theme('SystemDefault')
 
+            subframemath = [
+                            [sg.Button('^', size=(40,40), visible=False)],
+                            [sg.Button('π', size=(40,40), visible=False)],
+                            [sg.Button('√', size=(40,40), visible=False)]
+                            #add other symbol
+                        ]
+
             frame2 = [
                 [   #it's all in one line
+                    sg.Frame('', subframemath, key='framemath', visible=False), sg.Stretch(),   #predefinite view of framemath invisible
                     sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True),
                     sg.Stretch(), sg.MultilineOutput(size=(None,20), key='-OUTPUT-')
                 ],
@@ -135,7 +144,8 @@ class Main:
 
             frame3 = [
                 [   #it's all in one line
-                    sg.Button('Dark/White', auto_size_button=True), sg.Button('AutoSave', auto_size_button=True), sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(),
+                    sg.Button('Dark/White', auto_size_button=True), sg.Button('AutoSave', auto_size_button=True), sg.Button('Math', auto_size_button=True),
+                    sg.Button('Search', auto_size_button=False, tooltip="press f2"), sg.Stretch(),
                     sg.Button('Save and Quit', auto_size_button=True), sg.Button('Quit', auto_size_button=False, tooltip="press esc")
                 ]
             ]
@@ -368,6 +378,39 @@ class Main:
 
                     open_window.close()
 
+
+                if event_main == 'Math':            #set math bar to visible
+                    if Main.math_bool == False:      #on
+                        Main.math_bool = True
+                        main_window['framemath'].update(visible=True) #set visible frame
+                        main_window['^'].update(visible=True) #set visible symbol
+                        main_window['π'].update(visible=True) #set visible symbol
+                        main_window['√'].update(visible=True) #set visible symbol
+                        #add other symbol visible
+
+                        if sg.theme()=="Dark":
+                            main_window['Math'].update(button_color=('white','black'))  #put the button in on status color
+                        elif sg.theme()=="SystemDefault":
+                            main_window['Math'].update(button_color=('white','black'))  #put the button in on status color
+
+                    elif Main.math_bool == True:        #off
+                        Main.math_bool = False
+                        main_window['framemath'].update(visible=False) #set invisible frame
+                        main_window['^'].update(visible=False) #set invisible symbol
+                        main_window['π'].update(visible=False) #set invisible symbol
+                        main_window['√'].update(visible=False) #set invisible symbol
+                        #add other symbol invisible
+
+                        if sg.theme()=="Dark":
+                            main_window['Math'].update(button_color=('white','green'))  #put the button in off status color
+                        elif sg.theme()=="SystemDefault":
+                            main_window['Math'].update(button_color=('white','blue'))  #put the button in off status color
+
+
+                if event_main == 'π' or event_main == '√' or event_main == '^':      #add other symbol
+                    main_window['-INPUT-'].update(Main.mytext + Math_class.select_char(event_main))      #transfer the data to the func
+
+
                 if event_main == 'Search' or event_main == 'special 16777265':      #shortcut f1
                     Search_class.main_search_func()                           #go to search page
 
@@ -552,6 +595,24 @@ class Search_class(Main):  #Main class inheritance
         window_search.close()
 
         return Search_class.file_riga
+
+class Math_class(Main):
+    """
+        Math plugin for texteditor
+    """
+    def select_char(event_main):
+        if event_main == '^':
+            selectED_char = " ^"
+        elif event_main == 'π':
+            selectED_char = "π"
+        elif event_main == '√':
+            selectED_char = "sqrt()"
+
+        #add other symbol
+
+        return selectED_char
+    
+
 
 
 if __name__ == "__main__":
