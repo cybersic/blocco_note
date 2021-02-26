@@ -138,7 +138,7 @@ class Main:
                 [   #it's all in one line
                     sg.Frame('', subframemath, key='framemath', visible=False), sg.Stretch(),   #predefinite view of framemath invisible
                     sg.Stretch(), sg.Multiline(size=(90,20), auto_size_text=False, key='-INPUT-', autoscroll = True, enable_events=True),
-                    sg.Stretch(), sg.MultilineOutput(size=(None,20), key='-OUTPUT-')
+                    sg.Stretch(), sg.MultilineOutput(size_px=(None,None), key='-OUTPUT-')
                 ],
             ]
 
@@ -172,7 +172,7 @@ class Main:
                                         size=(120,600),
                                         resizable = True,
                                         no_titlebar = False
-                                    )
+                                    ).Finalize()
 
                                                                                 #DA SISTEMARE RESIZABLE
 
@@ -200,6 +200,7 @@ class Main:
                 old_mytext = Main.mytext                                                #trasfer Main.mytext on temporaney older_mytext
 
                 event_main, mytext = main_window.read(timeout=600)                      #take the data from the main_window
+
 
                 if controller_dw == True:
                     main_window['-INPUT-'].update(Main.mytext)                        #import last mytext if change dw
