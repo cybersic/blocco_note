@@ -267,6 +267,7 @@ class Main:
                                                     "Welcome file\n\n"
                                                     " This is a text editor for all common use like text writing or programming.\n"
                                                     " When you have read the welcome file you can cancel this one and write.\n"
+                                                    " You can use the math plugin for write like computer calculator format.\n"
                                                     " The predefinite status of AutoSave functionality is off.\n\n"
                                                     " Shortcut:\n"
                                                     "    - f1 = save\n"

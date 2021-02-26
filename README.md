@@ -11,6 +11,8 @@
                 <br>
                 When you have read the welcome file you can cancel this one and write.
                 <br>
+                You can use the math plugin for write like computer calculator format.
+                <br>
                 The predefinite status of AutoSave functionality is off.
                 <br>
                 <ul>Shortcut:
