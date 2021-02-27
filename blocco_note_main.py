@@ -156,7 +156,7 @@ class Main:
                         sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"),
                         sg.Button("Open terminal", auto_size_button=True, tooltip="press f12")
                     ],
-                    [sg.Stretch(), sg.MultilineOutput(size=(110,4), key='-OUT-'), sg.Stretch()],
+                    [sg.Stretch(), sg.MultilineOutput(size=(120,4), key='-OUT-'), sg.Stretch()],
 
                     [sg.Frame('', frame2)],
 
