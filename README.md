@@ -29,7 +29,7 @@
             <h3 style="color: black; font-weight: bold;">
                 Version:
                 <br>
-                This is the 1.0 version of text editor.
+                This is the 1.01 version of text editor.
                 <br>
                 You need PySimpleGUIQt / PySide2 library and python3.5 or up for use it
             </h3>
