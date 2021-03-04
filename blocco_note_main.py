@@ -43,7 +43,7 @@ class Main:
             if tmp_path.get('-INPUT-') != "":           #if is not white set the path else send error mex
                 if event == sg.WIN_CLOSED:                                      #set path at home if closed not set
                     if platform.system() == "Windows":                 #for windows
-                        Main.path = os.path.expanduser("~") + "\\"              
+                        Main.path = os.path.expanduser("~") + "\\"
                     else:                                              #for other
                         Main.path = os.path.expanduser("~") + "/"
                     break
@@ -51,7 +51,7 @@ class Main:
                 if event == 'Submit':
                     if tmp_path.get('-INPUT-') == "/" or tmp_path.get('-INPUT-') == "\\":         #if submit without input or root input set path at home
                         if platform.system() == "Windows":                 #for windows
-                            Main.path = os.path.expanduser("~") + "\\"              
+                            Main.path = os.path.expanduser("~") + "\\"
                         else:                                              #for other
                             Main.path = os.path.expanduser("~") + "/"
 
@@ -128,9 +128,10 @@ class Main:
                 sg.theme('SystemDefault')
 
             subframemath = [
-                            [sg.Button('^', size=(40,40), visible=False)],
-                            [sg.Button('π', size=(40,40), visible=False)],
-                            [sg.Button('√', size=(40,40), visible=False)]
+                            [sg.Button('^', size=(40,40), tooltip="Power", visible=False)],
+                            [sg.Button('_', size=(40,40), tooltip="Base", visible=False)],
+                            [sg.Button('π', size=(40,40), tooltip="PI Greek", visible=False)],
+                            [sg.Button('√', size=(40,40), tooltip="Square root", visible=False)]
                             #add other symbol
                         ]
 
@@ -150,7 +151,7 @@ class Main:
                 ]
             ]
 
-            layout = [                    
+            layout = [
                     [   #it's all in one line
                         sg.Button('Save', auto_size_button=True, tooltip="press f1"), sg.Button('Save as', auto_size_button=True, tooltip="Save with name"),
                         sg.Button('Open', auto_size_button=True, tooltip="press alt"), sg.Button('Set the Path', auto_size_button=True, tooltip="press f11"),
@@ -172,7 +173,7 @@ class Main:
                                         size=(120,600),
                                         resizable = True,
                                         no_titlebar = False
-                                    ).Finalize()
+                                    )
 
                                                                                 #DA SISTEMARE RESIZABLE
 
@@ -208,7 +209,7 @@ class Main:
 
                 if event_main != sg.WIN_CLOSED:                 #extract only if the event is not win closed (because he pollute mytext)
                     Main.mytext = mytext.get('-INPUT-')                      #extract text from dict obtained by input
-                
+
                 if old_mytext != Main.mytext:                   #check if mytext is changed for save or not
                     main_window['Save'].update(button_color=('black','red'))                        #color button  save
                     Main.saved = False
@@ -386,6 +387,7 @@ class Main:
                         Main.math_bool = True
                         main_window['framemath'].update(visible=True) #set visible frame
                         main_window['^'].update(visible=True) #set visible symbol
+                        main_window['_'].update(visible=True) #set visible symbol
                         main_window['π'].update(visible=True) #set visible symbol
                         main_window['√'].update(visible=True) #set visible symbol
                         #add other symbol visible
@@ -399,6 +401,7 @@ class Main:
                         Main.math_bool = False
                         main_window['framemath'].update(visible=False) #set invisible frame
                         main_window['^'].update(visible=False) #set invisible symbol
+                        main_window['_'].update(visible=True) #set invisible symbol
                         main_window['π'].update(visible=False) #set invisible symbol
                         main_window['√'].update(visible=False) #set invisible symbol
                         #add other symbol invisible
@@ -409,7 +412,7 @@ class Main:
                             main_window['Math'].update(button_color=('white','blue'))  #put the button in off status color
 
 
-                if event_main == 'π' or event_main == '√' or event_main == '^':      #add other symbol
+                if event_main == '^' or event_main == '_' or event_main == 'π' or event_main == '√':      #add other symbol
                     main_window['-INPUT-'].update(Main.mytext + Math_class.select_char(event_main))      #transfer the data to the func
 
 
@@ -605,6 +608,8 @@ class Math_class(Main):
     def select_char(event_main):
         if event_main == '^':
             selectED_char = " ^"
+        elif event_main == '_':
+            selectED_char = " _"
         elif event_main == 'π':
             selectED_char = "π"
         elif event_main == '√':
@@ -613,7 +618,7 @@ class Math_class(Main):
         #add other symbol
 
         return selectED_char
-    
+
 
 
 
